@@ -75,3 +75,26 @@ export const deleteFromCart = (data, all) => {
     body: JSON.stringify(data),
   });
 };
+export const deleteFullCart = () => {
+  return fetch(`${API_POINT}/cart/deleteCart`, {
+    method: "POST",
+    headers: {
+      Authorization: `${Token()}`,
+    },
+  });
+};
+export const postOrder = () => {
+  return fetch(`${API_POINT}/order`, {
+    method: "POST",
+    headers: {
+      Authorization: `${Token()}`,
+    },
+  });
+};
+export const getOrders = () => {
+  return fetch(`${API_POINT}/order`, {
+    headers: {
+      Authorization: `${Token()}`,
+    },
+  });
+};

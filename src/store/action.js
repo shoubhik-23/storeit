@@ -3,7 +3,7 @@ import { getCart, getIndex } from "../service/dataService";
 
 export const getAllItems = () => {
   return (dispatch) => {
-    getIndex()
+  return  getIndex()
       .then((resp) => resp.json())
       .then((data) => {
         return dispatch({ type: "getIndex", data: data.data });
@@ -25,7 +25,7 @@ export const onSearchHandler = (value, visibleItems, items) => {
 export const setCart = () => {
   return (dispatch) => {
     if (Token()) {
-      getCart()
+      return getCart()
         .then((resp) => resp.json())
         .then((data) => {
           if (data.message === "success") {

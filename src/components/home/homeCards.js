@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   Chip,
+  CircularProgress,
   Grid,
   Paper,
   Typography,
@@ -36,6 +37,7 @@ function HomeCards(props) {
 
   const [quantity, setQuantity] = useState(0);
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false)
   const [titleUpper, setTitleUpper] = useState(props.data.title.slice(0, 20));
   const [titleLower, setTitleLower] = useState(props.data.title.slice(20));
   const history = useHistory();
@@ -65,6 +67,8 @@ function HomeCards(props) {
           if (localCart.length === 0) {
             localCart.push({ product: data.data, quantity: 1 });
             localStorage.setItem("cart", JSON.stringify(localCart));
+            dispatch(action.setCart());
+
             return;
           }
 
@@ -86,14 +90,17 @@ function HomeCards(props) {
       .catch((err) => console.log(err));
   };
   const addCartHandler = () => {
+    setLoading(true)
     if (Token()) {
       addToCart(props.data._id)
-        .then((resp) => {
-          dispatch(action.setCart());
+        .then(async(resp) => {
+         await dispatch(action.setCart());
+          setLoading(false)
         })
         .catch((err) => console.log(err));
     } else {
       addToLocalCart();
+      setLoading(false)
     }
   };
   const HOC = (props) => {
@@ -115,10 +122,11 @@ function HomeCards(props) {
   return (
     <HOC badgeContent={quantity} style={{ backgroundColor: "white" }}>
       <Paper
-        elevation={5}
+        elevation={2}
         style={{
           padding: "5px 5px",
           boxSizing: "border-box",
+          backgroundColor:"#f2f2f2"
         }}
       >
         <Grid container className={classes.carxd}>
@@ -203,7 +211,17 @@ function HomeCards(props) {
               justifyContent: "center",
             }}
           >
-            <Button
+            {loading? <Button
+              variant="contained"
+              disabled
+              onClick={addCartHandler}
+              style={{
+                
+                width: "50%",
+              }}
+            >
+             <CircularProgress size={24}></CircularProgress>
+            </Button>: <Button
               variant="contained"
               onClick={addCartHandler}
               style={{
@@ -213,7 +231,8 @@ function HomeCards(props) {
               }}
             >
               Add
-            </Button>
+            </Button>}
+           
           </Grid>
         </Grid>
       </Paper>

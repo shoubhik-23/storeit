@@ -1,14 +1,17 @@
-import { Box, Button, Grid, Typography } from "@material-ui/core";
+import { Box, Button, CircularProgress, Grid, Typography } from "@material-ui/core";
 import React from "react";
 import { getCart } from "../../service/dataService";
 import { Token } from "../../constant/Api";
 import CartCards from "./cartCards";
 import { Forward } from "@material-ui/icons";
 import Logo from "../../assets/images/shopping-cart.png";
+import Checkout from "../checkout";
 
 class Cart extends React.Component {
   state = {
+    loading:true,
     cart: [],
+    open: false,
   };
   componentDidMount() {
     if (Token()) {
@@ -16,12 +19,14 @@ class Cart extends React.Component {
         .then((resp) => resp.json())
         .then((data) => {
           if (data.message === "success") {
-            this.setState({ cart: data.data });
+            this.setState({ cart: data.data,loading:false });
           }
         })
-        .catch((err) => console.log(err));
+        .catch((err) => {
+          this.setState({loading:false})
+          console.log(err)});
     } else {
-      this.setState({ cart: JSON.parse(localStorage.getItem("cart")) });
+      this.setState({ cart: JSON.parse(localStorage.getItem("cart")),loading:false });
     }
   }
   update = () => {
@@ -30,24 +35,26 @@ class Cart extends React.Component {
         .then((resp) => resp.json())
         .then((data) => {
           if (data.message === "success") {
-            this.setState({ cart: data.data });
+            this.setState({ cart: data.data,loading:false });
           }
         })
         .catch((err) => console.log(err));
     } else {
-      this.setState({ cart: JSON.parse(localStorage.getItem("cart")) });
+      this.setState({ cart: JSON.parse(localStorage.getItem("cart")) ,loading:false});
     }
   };
 
   checkoutHandler = () => {
     if (Token()) {
-      alert("please wat");
+      this.setState({ open: true });
     } else if (!Token()) {
       this.props.history.push("/login");
     }
   };
+  closeDialogHandler = () => {
+    this.setState({ open: false });
+  };
   render() {
-    console.log(this.state);
     return (
       <Box style={{ padding: "0px 10px" }}>
         <Grid
@@ -68,17 +75,16 @@ class Cart extends React.Component {
                 textDecoration: "underline",
               }}
             >
-              {" "}
+              
               My Cart
             </Typography>
           </Grid>
-          {this.state.cart.map((el, i) => (
+          { this.state.loading?<CircularProgress></CircularProgress> : this.state.cart.map((el, i) => (
             <Grid item xs={6} sm={4} md={3} key={i}>
               <CartCards update={this.update} data={el} key={i}></CartCards>
             </Grid>
           ))}
-
-          {this.state.cart.length > 0 ? (
+          {!this.state.loading?this.state.cart.length > 0 ? (
             <Grid
               item
               xs={12}
@@ -162,8 +168,16 @@ class Cart extends React.Component {
                 </Button>
               </Grid>
             </Grid>
-          )}
+          ):null}
+
+    
         </Grid>
+        <Checkout
+          update={this.update}
+          {...this.props}
+          open={this.state.open}
+          handleClose={this.closeDialogHandler}
+        ></Checkout>
       </Box>
     );
   }

@@ -16,6 +16,9 @@ import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import { AccountBox } from "@material-ui/icons";
 import EditIcon from "@material-ui/icons/Edit";
 import moment from "moment";
+import { connect } from "react-redux";
+import * as action from "../../store/action"
+
 
 const EmptyProfile = (props) => {
   const history = useHistory();
@@ -51,6 +54,7 @@ class ProfileComponent extends React.Component {
   }
   logoutHandler = () => {
     localStorage.removeItem("shop_token");
+    this.props.setCart()
     this.props.history.push("/");
   };
   render() {
@@ -363,4 +367,9 @@ class ProfileComponent extends React.Component {
     );
   }
 }
-export default ProfileComponent;
+const mapDisptachToProps=(dispatch)=>{
+  return ({
+    setCart:()=>dispatch(action.setCart())
+  })
+}
+export default connect (null,mapDisptachToProps)(ProfileComponent);

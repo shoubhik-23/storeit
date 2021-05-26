@@ -16,14 +16,20 @@ import * as action from "../store/action";
 
 import { useHistory } from "react-router-dom";
 import InboxIcon from "@material-ui/icons/MoveToInbox";
+import Logo from "../assets/images/logo7.png";
 import clsx from "clsx";
 
 import {
+  AccountBox,
+  Bookmark,
+  CallToAction,
+  Home,
   ShopOutlined,
   ShoppingBasketOutlined,
   ShoppingCart,
 } from "@material-ui/icons";
 import {
+  Box,
   Button,
   Divider,
   Drawer,
@@ -41,8 +47,30 @@ const useStyles = makeStyles((theme) => ({
   grow: {
     flexGrow: 1,
   },
+  logo:{
+    height:30,
+   cursor:"pointer",
+    padding:0,
+  
+    width:"20vh",
+    [theme.breakpoints.up("sm")]:{
+     height:50,
+      width:"36vh"
+
+    },
+    
+  },
+  cartLogo:{
+    fontSize:30,
+    [theme.breakpoints.up("sm")]:{
+      fontSize:50
+    }
+      
+  }
+,
   accountCircle: {
     display: "none",
+    cursor:"pointer",
     [theme.breakpoints.up("sm")]: {
       display: "block",
     },
@@ -56,7 +84,7 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up("sm")]: {
       display: "none",
     },
-    marginRight: theme.spacing(2),
+   
   },
   title: {
     display: "none",
@@ -129,6 +157,11 @@ export default function PrimarySearchAppBar() {
 
     dispatch(action.onSearchHandler(value, visibleItems, items));
   };
+  const logoutHandler = () => {
+    localStorage.removeItem("shop_token");
+    localStorage.removeItem("user_name")
+    history.push("/");
+  };
   const history = useHistory();
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -169,7 +202,15 @@ export default function PrimarySearchAppBar() {
       >
         My account
       </MenuItem>
-      <MenuItem onClick={handleMenuClose}>My Orders</MenuItem>
+      <MenuItem
+        onClick={() => {
+          history.push("/orders");
+
+          handleMenuClose();
+        }}
+      >
+        My Orders
+      </MenuItem>
       {!Token() ? (
         <MenuItem
           onClick={() => {
@@ -193,7 +234,7 @@ export default function PrimarySearchAppBar() {
       {Token() ? (
         <MenuItem
           onClick={() => {
-            history.push("/logout");
+            logoutHandler();
             handleMenuClose();
           }}
         >
@@ -216,6 +257,7 @@ export default function PrimarySearchAppBar() {
   const list = (anchor) => (
     <Grid
       container
+      spacing={2}
       style={{ maxWidth: "45vh" }}
       className={clsx({
         [classes.fullList]: anchor === "top" || anchor === "bottom",
@@ -224,74 +266,120 @@ export default function PrimarySearchAppBar() {
       onClick={toggleDrawer(anchor, false)}
       onKeyDown={toggleDrawer(anchor, false)}
     >
-      <Grid item xs={12} style={{ display: "flex", justifyContent: "center" }}>
-        <AccountCircle
-          className={classes.mobileAccountCircleccountCircle}
-          style={{ fontSize: 50 }}
-          onClick={handleProfileMenuOpen}
-        />
-      </Grid>
-      <Grid item xs={12} style={{ display: "flex", justifyContent: "center" }}>
-        Shoubhik Maji
-      </Grid>
       <Grid
         item
         xs={12}
-        style={{ display: "flex", justifyContent: "center" }}
-        onClick={() => history.push("/profile")}
+        style={{
+          display: "flex",
+          backgroundColor: "#99e6ff",
+
+          justifyContent: "left",
+          alignItems: "center",
+        }}
       >
-        My Account
-      </Grid>
-      <Grid item xs={12} style={{ display: "flex", justifyContent: "center" }}>
-        My Orders
+        <AccountCircle
+          className={classes.mobileAccountCircleccountCircle}
+          style={{ fontSize: 50, color: "silver" }}
+          onClick={handleProfileMenuOpen}
+        />
+        <Typography style={{ fontSize: 25, opacity: 0.8 }}>
+         Hello {localStorage.getItem("user_name")?localStorage.getItem("user_name"):"Guest"} !
+        </Typography>
       </Grid>
 
-      {!Token() ? (
+      <Grid item container spacing={3} xs={12} style={{paddingLeft:15}}>
         <Grid
           item
           xs={12}
-          onClick={() => {
-            history.push("/login");
-            handleMenuClose();
+          onClick={()=>history.push("/")}
+          style={{
+            display: "flex",
+            justifyContent: "left",
+            alignItems: "center",
           }}
-          style={{ display: "flex", justifyContent: "center" }}
         >
-          Login
+          <Home style={{ color: "#999966" }}></Home>
+          <Typography style={{ fontSize: 16 ,marginLeft:"0.5rem"}}> Home</Typography>
         </Grid>
-      ) : null}
-      {!Token() ? (
         <Grid
           item
           xs={12}
-          style={{ display: "flex", justifyContent: "center" }}
-          onClick={() => {
-            history.push("/signup");
-            handleMenuClose();
-          }}
+          style={{ display: "flex", justifyContent: "left" }}
+          onClick={() => history.push("/profile")}
         >
-          SignUp
+          <AccountBox style={{ color: "#999966" }}></AccountBox>
+          <Typography style={{ fontSize: 16 ,marginLeft:"0.5rem"}}>My Account</Typography>
         </Grid>
-      ) : null}
-      {Token() ? (
-        <Grid
-          item
-          xs={12}
-          style={{ display: "flex", justifyContent: "center" }}
-          onClick={() => {
-            history.push("/logout");
-            handleMenuClose();
-          }}
-        >
-          LogOut
+        <Grid item xs={12} style={{ display: "flex", justifyContent: "left" }} onClick={()=>history.push("/orders")} >
+          <Bookmark style={{ color: "#999966" }}></Bookmark>
+          <Typography style={{ fontSize: 16 ,marginLeft:"0.5rem"}}> My Orders</Typography>
         </Grid>
-      ) : null}
+
+        {!Token() ? (
+          <Grid
+            item
+            xs={12}
+            onClick={() => {
+              history.push("/login");
+              handleMenuClose();
+            }}
+            style={{ display: "flex", justifyContent: "center" }}
+          >
+            <Button
+              size="small"
+              variant="contained"
+              style={{ backgroundColor: "#00cc00", color: "white" }}
+            >
+              Login
+            </Button>
+          </Grid>
+        ) : null}
+        {!Token() ? (
+          <Grid
+            item
+            xs={12}
+            style={{ display: "flex", justifyContent: "center" }}
+            onClick={() => {
+              history.push("/signup");
+              handleMenuClose();
+            }}
+          >
+            <Button
+              size="small"
+              variant="contained"
+              style={{ backgroundColor: "#0088cc", color: "white" }}
+            >
+              SignUp
+            </Button>
+          </Grid>
+        ) : null}
+        {Token() ? (
+          <Grid
+            item
+            xs={12}
+            style={{ display: "flex", justifyContent: "center" }}
+            onClick={() => {
+              logoutHandler();
+              handleMenuClose();
+            }}
+          >
+            <Button
+              size="small"
+              variant="contained"
+              style={{ backgroundColor: "#ff3300", color: "white" }}
+            >
+              LogOut
+            </Button>
+          </Grid>
+        ) : null}
+      </Grid>
     </Grid>
   );
 
   return (
     <div>
-      <AppBar position="static" style={{ marginBottom: 40 }}>
-        <Toolbar>
+      <AppBar position="static" style={{ }}>
+        <Toolbar >
           <IconButton
             edge="start"
             onClick={toggleDrawer("left", true)}
@@ -309,14 +397,19 @@ export default function PrimarySearchAppBar() {
             {list("left")}
           </Drawer>
 
-          <Typography
-            className={classes.title}
-            variant="h6"
-            noWrap
+          <Box
+          className={classes.logo}
+           
             onClick={() => history.push("/")}
           >
-            Material-UI
-          </Typography>
+            <img
+              style={{ height: "100%", width: "100%" }}
+              src={Logo}
+              alt="logo"
+            ></img>
+          </Box>
+
+        
           <div className={classes.search}>
             <div className={classes.searchIcon}>
               <SearchIcon />
@@ -338,24 +431,24 @@ export default function PrimarySearchAppBar() {
           <div style={{ display: "flex" }}>
             <IconButton
               color="inherit"
-              style={{ border: "solid" }}
+              
               className={classes.mobileSearch}
             >
               <SearchIcon />
             </IconButton>
+            <IconButton color="inherit" style={{padding:0,marginLeft:"2vh"}}  >
 
             <Badge badgeContent={cartCount.length} color="secondary">
-              <ShoppingCart
-                style={{ fontSize: 50 }}
+              <ShoppingCart className={classes.cartLogo}
+               
                 onClick={() => history.push("/cart")}
               ></ShoppingCart>
-            </Badge>
-
-            <AccountCircle
-              className={classes.accountCircle}
+            </Badge></IconButton>
+            <IconButton color="inherit" style={{padding:0,marginLeft:"2vh"}} ><AccountCircle className={classes.accountCircle}
+              
               style={{ fontSize: 50 }}
               onClick={handleProfileMenuOpen}
-            />
+            /></IconButton>
           </div>
         </Toolbar>
       </AppBar>

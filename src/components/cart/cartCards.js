@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   ButtonGroup,
+  CircularProgress,
   Grid,
   Paper,
   Typography,
@@ -21,6 +22,7 @@ function CartCards(props) {
   const [data, setData] = useState(props.data);
   const dispatch = useDispatch();
   const [quantity, setQuantity] = useState(props.data.quantity);
+  const [loading, setLoading] = useState(false)
   const [titleUpper, setTitleUpper] = useState(undefined);
 
   const [titleLower, setTitleLower] = useState(undefined);
@@ -69,6 +71,7 @@ function CartCards(props) {
     props.update();
   };
   const deleteHandler = (all) => {
+    setLoading(true)
     if (Token()) {
       deleteFromCart({ productId: data.product._id }, all)
         .then((resp) => resp.json())
@@ -76,10 +79,12 @@ function CartCards(props) {
           data?.message === "success" && setQuantity((prev) => prev - 1);
           dispatch(action.setCart());
           props.update();
+          setLoading(false)
         })
         .catch((err) => console.log(err));
     } else {
       deleteLocalCart(all);
+      setLoading(false)
     }
   };
   const addCartHandler = () => {
@@ -156,7 +161,8 @@ function CartCards(props) {
             style={{ margin: "10px 0px" }}
           >
             <Button
-              style={{ backgroundColor: "yellow" }}
+              style={{ backgroundColor: quantity<=1?"grey":"yellow" }}
+              disabled={quantity<=1}
               onClick={() => deleteHandler(false)}
             >
               <Remove style={{ color: "black" }}></Remove>
@@ -175,18 +181,32 @@ function CartCards(props) {
           xs={12}
           style={{ display: "flex", justifyContent: "center" }}
         >
-          <Button
+          {loading?    <Button
+          disabled
             style={{
               width: "50%",
               backgroundColor: " #ff5c33 ",
               fontWeight: 600,
               color: "white",
+              
             }}
             variant="contained"
-            onClick={() => deleteHandler(true)}
+            
           >
-            Delete
-          </Button>
+           <CircularProgress size={24} ></CircularProgress>
+          </Button>:   <Button
+          style={{
+            width: "50%",
+            backgroundColor: " #ff5c33 ",
+            fontWeight: 600,
+            color: "white",
+          }}
+          variant="contained"
+          onClick={() => deleteHandler(true)}
+        >
+          Delete
+        </Button>}
+       
         </Grid>
       </Grid>
     </Paper>

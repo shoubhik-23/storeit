@@ -66,7 +66,7 @@ const SignUp = (props) => {
       .then((response) => response.json())
       .then((data) => {
         if (data.message === "success") {
-          history.push("/");
+          history.push("/login");
         } else {
           alert("Error");
         }
@@ -148,7 +148,8 @@ const SignUp = (props) => {
               <TextField
                 fullWidth
                 size="small"
-                label="Phone (optional)"
+                label="Phone "
+                required
                 variant="outlined"
                 onChange={(e) =>
                   setSignUpData({

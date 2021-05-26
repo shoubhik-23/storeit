@@ -16,6 +16,8 @@ import { Visibility, VisibilityOff } from "@material-ui/icons";
 import { addLocalToCart, postLogin } from "../../service/dataService";
 import { Token } from "../../constant/Api";
 import { useHistory } from "react-router";
+import { connect } from "react-redux";
+import CustomizedSnackbars from "../../common/alert";
 
 class Login extends React.Component {
   state = {
@@ -23,12 +25,30 @@ class Login extends React.Component {
     password: "",
     showPassword: false,
     token: undefined,
+    emailError:false,
+    open:false,
+    message:""
   };
   handleClickShowPassword = () => {
     this.setState({ showPassword: !this.state.showPassword });
   };
   handleEmailChange = (event) => {
-    this.setState({ email: event.target.value });
+    let string=event.target.value
+    this.setState({ email: string });
+    if(string){
+      if (
+        /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/.test(string)
+      ){
+        this.setState({emailError:false})
+      }
+      else {
+        this.setState({emailError:true})
+      }
+    }
+    else{
+      this.setState({emailError:false})
+    }
+  
   };
   handleChange = (event) => {
     this.setState({ password: event.target.value });
@@ -40,6 +60,7 @@ class Login extends React.Component {
         if (data.message === "success") {
           localStorage.setItem("shop_token", data.token);
           localStorage.setItem("shop_id", data.userId);
+          localStorage.setItem("user_name",data.name)
           localStorage.setItem("cart", JSON.stringify([]));
 
           this.setState({ token: localStorage.getItem("shop_token") }, () =>
@@ -48,7 +69,10 @@ class Login extends React.Component {
               this.state.token
             )
           );
-          this.props.history.goBack();
+          this.props.history.push("/");
+        }
+        else{
+          this.setState({open:true,message:data.message})
         }
       })
       .catch((err) => console.log(err));
@@ -63,7 +87,7 @@ class Login extends React.Component {
           md={4}
           style={{ display: "flex", justifyContent: "center" }}
         >
-          <Paper elevation={4} style={{ padding: "20px 10px 30px 10px" }}>
+          <Paper elevation={3} style={{ padding: "20px 10px 30px 10px" }}>
             <Box
               style={{
                 display: "flex",
@@ -84,6 +108,8 @@ class Login extends React.Component {
                   variant="outlined"
                   onChange={this.handleEmailChange}
                   value={this.state.email}
+                  error={this.state.emailError}
+                  helperText={this.state.emailError?"Please enter a valid email":null}
                 ></TextField>
               </Grid>
               <Grid
@@ -124,15 +150,26 @@ class Login extends React.Component {
                 xs={12}
                 style={{ display: "flex", justifyContent: "center" }}
               >
-                <Button
+                {this.state.emailError||!this.state.email
+                ?<Button
+                variant="contained"
+                disabled
+                style={{ backgroundColor: "grey", color: "white" }}
+              >
+                <Typography style={{ fontWeight: "lighter" }}>
+                  Login
+                </Typography>
+              </Button>:<Button
                   variant="contained"
+                 
                   style={{ backgroundColor: "#419168", color: "white" }}
                   onClick={this.loginHandler}
                 >
                   <Typography style={{ fontWeight: "lighter" }}>
                     Login
                   </Typography>
-                </Button>
+                </Button>}
+             
               </Grid>
               <Grid
                 item
@@ -152,8 +189,10 @@ class Login extends React.Component {
             </Grid>
           </Paper>
         </Grid>
+        <CustomizedSnackbars open={this.state.open} message={this.state.message} handleClose={()=>this.setState({open:false})}></CustomizedSnackbars>
       </Grid>
     );
   }
 }
-export default Login;
+
+export default  Login;

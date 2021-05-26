@@ -10,13 +10,16 @@ import SignUp from "./components/login/signup";
 import AddAddress from "./components/profile/addAddress";
 import "@fontsource/roboto";
 import { Token } from "./constant/Api";
+import Order from "./components/order";
 
 function App() {
   useEffect(() => {
+    console.log(78)
     if (!localStorage.getItem("cart")) {
       localStorage.setItem("cart", JSON.stringify([]));
     }
-  }, []);
+  }, [Token()]);
+
   return (
     <>
       <Route path="/" component={PrimarySearchAppBar}></Route>
@@ -26,6 +29,8 @@ function App() {
         {!Token() && <Route exact path="/login" component={Login}></Route>}
 
         {!Token() && <Route exact path="/signup" component={SignUp}></Route>}
+      <Route exact path="/orders" component={Order}></Route>
+
         <Route exact path="/cart" component={Cart}></Route>
         <Route exact path="/profile" component={ProfileComponent}></Route>
         <Route exact path="/profile/address" component={AddAddress}></Route>
