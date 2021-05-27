@@ -2,6 +2,7 @@ const initialState = {
   items: [],
   visibleItems: [],
   cart: [],
+  searchOn: false,
 };
 
 export const reducer = (state = initialState, action) => {
@@ -13,7 +14,9 @@ export const reducer = (state = initialState, action) => {
     let items = action.data.items;
     if (value) {
       let filter = items.filter(
-        (el) => el.title.toLowerCase().indexOf(value.toLowerCase()) > -1
+        (el) =>
+          el.title.toLowerCase().indexOf(value.toLowerCase()) > -1 ||
+          el.category.toLowerCase().indexOf(value.toLowerCase()) > -1
       );
       return { ...state, visibleItems: filter };
     } else {
@@ -23,6 +26,11 @@ export const reducer = (state = initialState, action) => {
   if (action.type === "cartCount") {
     return { ...state, cart: action.data };
   }
-
+  if (action.type === "searchOn") {
+    return { ...state, searchOn: true };
+  }
+  if (action.type === "searchOff") {
+    return { ...state, searchOn: false };
+  }
   return state;
 };

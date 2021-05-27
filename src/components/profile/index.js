@@ -17,20 +17,23 @@ import { AccountBox } from "@material-ui/icons";
 import EditIcon from "@material-ui/icons/Edit";
 import moment from "moment";
 import { connect } from "react-redux";
-import * as action from "../../store/action"
-
+import * as action from "../../store/action";
 
 const EmptyProfile = (props) => {
   const history = useHistory();
   return (
-    <Grid container>
+    <Grid container spacing={3} style={{ marginTop: 60 }}>
       <Grid item xs={12} style={{ display: "flex", justifyContent: "center" }}>
-        <Typography>
-          Please Login to your account to view account details
+        <Typography style={{ fontSize: 18, opacity: 0.7, fontWeight: 600 }}>
+          Please Login to your account first.
         </Typography>
       </Grid>
       <Grid item xs={12} style={{ display: "flex", justifyContent: "center" }}>
-        <Button variant="outlined" onClick={() => history.push("/login")}>
+        <Button
+          variant="outlined"
+          color="primary"
+          onClick={() => history.push("/login")}
+        >
           Login
         </Button>
       </Grid>
@@ -54,7 +57,7 @@ class ProfileComponent extends React.Component {
   }
   logoutHandler = () => {
     localStorage.removeItem("shop_token");
-    this.props.setCart()
+    this.props.setCart();
     this.props.history.push("/");
   };
   render() {
@@ -367,9 +370,9 @@ class ProfileComponent extends React.Component {
     );
   }
 }
-const mapDisptachToProps=(dispatch)=>{
-  return ({
-    setCart:()=>dispatch(action.setCart())
-  })
-}
-export default connect (null,mapDisptachToProps)(ProfileComponent);
+const mapDisptachToProps = (dispatch) => {
+  return {
+    setCart: () => dispatch(action.setCart()),
+  };
+};
+export default connect(null, mapDisptachToProps)(ProfileComponent);

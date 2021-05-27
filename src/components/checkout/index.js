@@ -8,14 +8,18 @@ import {
 } from "@material-ui/core";
 import { Check, Close } from "@material-ui/icons";
 import React from "react";
+import { connect } from "react-redux";
+import * as action from "../../store/action";
 import {
   deleteFullCart,
   getCart,
   getUser,
   postOrder,
 } from "../../service/dataService";
+import CheckoutDialog from "./dialog";
 class Checkout extends React.PureComponent {
   state = {
+    open: false,
     address: {
       name: "",
       email: "",
@@ -65,10 +69,17 @@ class Checkout extends React.PureComponent {
       .then((data) => data?.message === "success" && deleteFullCart())
       .then((resp) => resp.json())
       .then((data) => {
-        data?.message === "success" && this.props.handleClose();
+        data?.message === "success" && this.props.updateCart();
         this.props.update();
+        this.setState({ open: true });
       })
       .catch((err) => console.log(err));
+  };
+  handleClose = () => {
+    this.props.history.push("/orders");
+    this.props.handleClose();
+
+    this.setState({ open: false });
   };
 
   render() {
@@ -166,6 +177,10 @@ class Checkout extends React.PureComponent {
                 >
                   Confirm
                 </Button>
+                <CheckoutDialog
+                  open={this.state.open}
+                  handleClose={this.handleClose}
+                ></CheckoutDialog>
               </Grid>
             </Grid>
           </DialogTitle>
@@ -174,5 +189,10 @@ class Checkout extends React.PureComponent {
     );
   }
 }
+const mapDispatchToProps = (dispatch) => {
+  return {
+    updateCart: () => dispatch(action.setCart()),
+  };
+};
 
-export default Checkout;
+export default connect(null, mapDispatchToProps)(Checkout);

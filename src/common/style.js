@@ -14,18 +14,18 @@ export const style = makeStyles(() => ({
   },
 
   // ------------------------------------------------------
-  active:{
-    backgroundColor:'rgba(0, 0, 0, 0.08)',
-    borderRadius:'5px'
+  active: {
+    backgroundColor: "rgba(0, 0, 0, 0.08)",
+    borderRadius: "5px",
   },
- 
-  paginationButton:{
-    border:'none',
-    outline:'none',
-    backgroundColor:'white',
-    padding:'5px 8px',
-    fontSize:'12px',
-    cursor:'pointer',
+
+  paginationButton: {
+    border: "none",
+    outline: "none",
+    backgroundColor: "#f2f2f2",
+
+    padding: "5px 8px",
+    fontSize: "12px",
+    cursor: "pointer",
   },
- 
 }));

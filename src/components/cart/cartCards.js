@@ -17,13 +17,15 @@ import {
 import { API_POINT, Token } from "../../constant/Api";
 import { Add, Remove } from "@material-ui/icons";
 import { useDispatch } from "react-redux";
+import { useHistory } from "react-router";
 
 function CartCards(props) {
   const [data, setData] = useState(props.data);
   const dispatch = useDispatch();
   const [quantity, setQuantity] = useState(props.data.quantity);
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const [titleUpper, setTitleUpper] = useState(undefined);
+  const history = useHistory();
 
   const [titleLower, setTitleLower] = useState(undefined);
   useEffect(() => {
@@ -71,7 +73,7 @@ function CartCards(props) {
     props.update();
   };
   const deleteHandler = (all) => {
-    setLoading(true)
+    setLoading(true);
     if (Token()) {
       deleteFromCart({ productId: data.product._id }, all)
         .then((resp) => resp.json())
@@ -79,12 +81,12 @@ function CartCards(props) {
           data?.message === "success" && setQuantity((prev) => prev - 1);
           dispatch(action.setCart());
           props.update();
-          setLoading(false)
+          setLoading(false);
         })
         .catch((err) => console.log(err));
     } else {
       deleteLocalCart(all);
-      setLoading(false)
+      setLoading(false);
     }
   };
   const addCartHandler = () => {
@@ -104,13 +106,14 @@ function CartCards(props) {
   };
   return (
     <Paper
-      elevation={5}
+      elevation={3}
       style={{
-        padding: "10px 5px",
+        padding: "5px 5px",
         boxSizing: "border-box",
+        backgroundColor: "rgb(255, 255, 255,0.5)",
       }}
     >
-      <Grid container>
+      <Grid container style={{ padding: 0, minHeight: 30 }}>
         <Grid
           item
           xs={12}
@@ -136,14 +139,35 @@ function CartCards(props) {
             ></img>
           </Box>
         </Grid>
-        <Grid item xs={12} style={{ cursor: "pointer" }}>
-          <Typography style={{ textAlign: "center" }}>{titleUpper}</Typography>
-          <div style={{ display: "flex", justifyContent: "center" }}>
-            <Typography style={{ textAlign: "center" }}>
-              {titleLower}
+        <Grid
+          item
+          container
+          xs={12}
+          style={{
+            cursor: "pointer",
+          }}
+          onClick={() =>
+            history.push({
+              pathname: "/product",
+              state: {
+                data: data,
+              },
+            })
+          }
+        >
+          <Grid
+            item
+            xs={12}
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              width: 100,
+            }}
+          >
+            <Typography noWrap style={{ textAlign: "center" }}>
+              {titleUpper}
             </Typography>
-            <Typography>....</Typography>
-          </div>
+          </Grid>
         </Grid>
         <Grid item xs={12}>
           <Typography style={{ textAlign: "center", color: "red" }}>
@@ -161,8 +185,8 @@ function CartCards(props) {
             style={{ margin: "10px 0px" }}
           >
             <Button
-              style={{ backgroundColor: quantity<=1?"grey":"yellow" }}
-              disabled={quantity<=1}
+              style={{ backgroundColor: quantity <= 1 ? "grey" : "yellow" }}
+              disabled={quantity <= 1}
               onClick={() => deleteHandler(false)}
             >
               <Remove style={{ color: "black" }}></Remove>
@@ -181,32 +205,33 @@ function CartCards(props) {
           xs={12}
           style={{ display: "flex", justifyContent: "center" }}
         >
-          {loading?    <Button
-          disabled
-            style={{
-              width: "50%",
-              backgroundColor: " #ff5c33 ",
-              fontWeight: 600,
-              color: "white",
-              
-            }}
-            variant="contained"
-            
-          >
-           <CircularProgress size={24} ></CircularProgress>
-          </Button>:   <Button
-          style={{
-            width: "50%",
-            backgroundColor: " #ff5c33 ",
-            fontWeight: 600,
-            color: "white",
-          }}
-          variant="contained"
-          onClick={() => deleteHandler(true)}
-        >
-          Delete
-        </Button>}
-       
+          {loading ? (
+            <Button
+              disabled
+              style={{
+                width: "50%",
+                backgroundColor: " #ff5c33 ",
+                fontWeight: 600,
+                color: "white",
+              }}
+              variant="contained"
+            >
+              <CircularProgress size={24}></CircularProgress>
+            </Button>
+          ) : (
+            <Button
+              style={{
+                width: "50%",
+                backgroundColor: " #ff5c33 ",
+                fontWeight: 600,
+                color: "white",
+              }}
+              variant="contained"
+              onClick={() => deleteHandler(true)}
+            >
+              Delete
+            </Button>
+          )}
         </Grid>
       </Grid>
     </Paper>

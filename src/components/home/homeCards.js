@@ -7,6 +7,7 @@ import {
   Grid,
   Paper,
   Typography,
+  withWidth,
 } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
@@ -18,10 +19,8 @@ import { useDispatch, useSelector } from "react-redux";
 import * as action from "../../store/action";
 const style = makeStyles((theme) => ({
   card: {
-    width: "20vh",
-    [theme.breakpoints.up("sm")]: {
-      display: "none",
-    },
+    padding: 0,
+    minHeight: 210,
   },
   root: {
     backgroundColor: "#669999",
@@ -37,7 +36,7 @@ function HomeCards(props) {
 
   const [quantity, setQuantity] = useState(0);
   const dispatch = useDispatch();
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const [titleUpper, setTitleUpper] = useState(props.data.title.slice(0, 20));
   const [titleLower, setTitleLower] = useState(props.data.title.slice(20));
   const history = useHistory();
@@ -90,17 +89,17 @@ function HomeCards(props) {
       .catch((err) => console.log(err));
   };
   const addCartHandler = () => {
-    setLoading(true)
+    setLoading(true);
     if (Token()) {
       addToCart(props.data._id)
-        .then(async(resp) => {
-         await dispatch(action.setCart());
-          setLoading(false)
+        .then(async (resp) => {
+          await dispatch(action.setCart());
+          setLoading(false);
         })
         .catch((err) => console.log(err));
     } else {
       addToLocalCart();
-      setLoading(false)
+      setLoading(false);
     }
   };
   const HOC = (props) => {
@@ -122,18 +121,21 @@ function HomeCards(props) {
   return (
     <HOC badgeContent={quantity} style={{ backgroundColor: "white" }}>
       <Paper
-        elevation={2}
+        elevation={3}
         style={{
           padding: "5px 5px",
           boxSizing: "border-box",
-          backgroundColor:"#f2f2f2"
+          backgroundColor: "rgb(255, 255, 255,0.6)",
         }}
       >
-        <Grid container className={classes.carxd}>
+        <Grid container className={classes.card}>
           <Grid
             item
             xs={12}
-            style={{ display: "flex", justifyContent: "center" }}
+            style={{
+              display: "flex",
+              justifyContent: "center",
+            }}
           >
             <Box
               style={{
@@ -211,28 +213,30 @@ function HomeCards(props) {
               justifyContent: "center",
             }}
           >
-            {loading? <Button
-              variant="contained"
-              disabled
-              onClick={addCartHandler}
-              style={{
-                
-                width: "50%",
-              }}
-            >
-             <CircularProgress size={24}></CircularProgress>
-            </Button>: <Button
-              variant="contained"
-              onClick={addCartHandler}
-              style={{
-                backgroundColor: "#ffff66",
-                fontWeight: 600,
-                width: "50%",
-              }}
-            >
-              Add
-            </Button>}
-           
+            {loading ? (
+              <Button
+                variant="contained"
+                disabled
+                onClick={addCartHandler}
+                style={{
+                  width: "50%",
+                }}
+              >
+                <CircularProgress size={24}></CircularProgress>
+              </Button>
+            ) : (
+              <Button
+                variant="contained"
+                onClick={addCartHandler}
+                style={{
+                  backgroundColor: "#ffff66",
+                  fontWeight: 600,
+                  width: "50%",
+                }}
+              >
+                Add
+              </Button>
+            )}
           </Grid>
         </Grid>
       </Paper>
@@ -240,4 +244,4 @@ function HomeCards(props) {
   );
 }
 
-export default HomeCards;
+export default withWidth()(HomeCards);

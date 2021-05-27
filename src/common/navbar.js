@@ -47,30 +47,26 @@ const useStyles = makeStyles((theme) => ({
   grow: {
     flexGrow: 1,
   },
-  logo:{
-    height:30,
-   cursor:"pointer",
-    padding:0,
-  
-    width:"20vh",
-    [theme.breakpoints.up("sm")]:{
-     height:50,
-      width:"36vh"
+  logo: {
+    height: 30,
+    cursor: "pointer",
+    padding: 0,
 
+    width: "20vh",
+    [theme.breakpoints.up("sm")]: {
+      height: 50,
+      width: "36vh",
     },
-    
   },
-  cartLogo:{
-    fontSize:30,
-    [theme.breakpoints.up("sm")]:{
-      fontSize:50
-    }
-      
-  }
-,
+  cartLogo: {
+    fontSize: 30,
+    [theme.breakpoints.up("sm")]: {
+      fontSize: 50,
+    },
+  },
   accountCircle: {
     display: "none",
-    cursor:"pointer",
+    cursor: "pointer",
     [theme.breakpoints.up("sm")]: {
       display: "block",
     },
@@ -84,7 +80,6 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up("sm")]: {
       display: "none",
     },
-   
   },
   title: {
     display: "none",
@@ -159,7 +154,7 @@ export default function PrimarySearchAppBar() {
   };
   const logoutHandler = () => {
     localStorage.removeItem("shop_token");
-    localStorage.removeItem("user_name")
+    localStorage.removeItem("user_name");
     history.push("/");
   };
   const history = useHistory();
@@ -283,15 +278,19 @@ export default function PrimarySearchAppBar() {
           onClick={handleProfileMenuOpen}
         />
         <Typography style={{ fontSize: 25, opacity: 0.8 }}>
-         Hello {localStorage.getItem("user_name")?localStorage.getItem("user_name"):"Guest"} !
+          Hello&nbsp;
+          {localStorage.getItem("user_name")
+            ? localStorage.getItem("user_name")
+            : "Guest"}
+          !
         </Typography>
       </Grid>
 
-      <Grid item container spacing={3} xs={12} style={{paddingLeft:15}}>
+      <Grid item container spacing={3} xs={12} style={{ paddingLeft: 15 }}>
         <Grid
           item
           xs={12}
-          onClick={()=>history.push("/")}
+          onClick={() => history.push("/")}
           style={{
             display: "flex",
             justifyContent: "left",
@@ -299,7 +298,9 @@ export default function PrimarySearchAppBar() {
           }}
         >
           <Home style={{ color: "#999966" }}></Home>
-          <Typography style={{ fontSize: 16 ,marginLeft:"0.5rem"}}> Home</Typography>
+          <Typography style={{ fontSize: 16, marginLeft: "0.5rem" }}>
+            Home
+          </Typography>
         </Grid>
         <Grid
           item
@@ -308,11 +309,20 @@ export default function PrimarySearchAppBar() {
           onClick={() => history.push("/profile")}
         >
           <AccountBox style={{ color: "#999966" }}></AccountBox>
-          <Typography style={{ fontSize: 16 ,marginLeft:"0.5rem"}}>My Account</Typography>
+          <Typography style={{ fontSize: 16, marginLeft: "0.5rem" }}>
+            My Account
+          </Typography>
         </Grid>
-        <Grid item xs={12} style={{ display: "flex", justifyContent: "left" }} onClick={()=>history.push("/orders")} >
+        <Grid
+          item
+          xs={12}
+          style={{ display: "flex", justifyContent: "left" }}
+          onClick={() => history.push("/orders")}
+        >
           <Bookmark style={{ color: "#999966" }}></Bookmark>
-          <Typography style={{ fontSize: 16 ,marginLeft:"0.5rem"}}> My Orders</Typography>
+          <Typography style={{ fontSize: 16, marginLeft: "0.5rem" }}>
+            My Orders
+          </Typography>
         </Grid>
 
         {!Token() ? (
@@ -378,8 +388,8 @@ export default function PrimarySearchAppBar() {
 
   return (
     <div>
-      <AppBar position="static" style={{ }}>
-        <Toolbar >
+      <AppBar position="fixed">
+        <Toolbar>
           <IconButton
             edge="start"
             onClick={toggleDrawer("left", true)}
@@ -397,11 +407,7 @@ export default function PrimarySearchAppBar() {
             {list("left")}
           </Drawer>
 
-          <Box
-          className={classes.logo}
-           
-            onClick={() => history.push("/")}
-          >
+          <Box className={classes.logo} onClick={() => history.push("/")}>
             <img
               style={{ height: "100%", width: "100%" }}
               src={Logo}
@@ -409,7 +415,6 @@ export default function PrimarySearchAppBar() {
             ></img>
           </Box>
 
-        
           <div className={classes.search}>
             <div className={classes.searchIcon}>
               <SearchIcon />
@@ -431,24 +436,35 @@ export default function PrimarySearchAppBar() {
           <div style={{ display: "flex" }}>
             <IconButton
               color="inherit"
-              
+              onClick={() => {
+                history.push("/");
+                dispatch({ type: "searchOn" });
+              }}
               className={classes.mobileSearch}
             >
               <SearchIcon />
             </IconButton>
-            <IconButton color="inherit" style={{padding:0,marginLeft:"2vh"}}  >
-
-            <Badge badgeContent={cartCount.length} color="secondary">
-              <ShoppingCart className={classes.cartLogo}
-               
-                onClick={() => history.push("/cart")}
-              ></ShoppingCart>
-            </Badge></IconButton>
-            <IconButton color="inherit" style={{padding:0,marginLeft:"2vh"}} ><AccountCircle className={classes.accountCircle}
-              
-              style={{ fontSize: 50 }}
-              onClick={handleProfileMenuOpen}
-            /></IconButton>
+            <IconButton
+              color="inherit"
+              style={{ padding: 0, marginLeft: "2vh" }}
+            >
+              <Badge badgeContent={cartCount.length} color="secondary">
+                <ShoppingCart
+                  className={classes.cartLogo}
+                  onClick={() => history.push("/cart")}
+                ></ShoppingCart>
+              </Badge>
+            </IconButton>
+            <IconButton
+              color="inherit"
+              style={{ padding: 0, marginLeft: "2vh" }}
+            >
+              <AccountCircle
+                className={classes.accountCircle}
+                style={{ fontSize: 50 }}
+                onClick={handleProfileMenuOpen}
+              />
+            </IconButton>
           </div>
         </Toolbar>
       </AppBar>

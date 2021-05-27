@@ -78,9 +78,15 @@ function AddAddress(props) {
     history.push("/profile");
   };
   return (
-    <Grid container style={{ justifyContent: "center" }}>
-      <Grid item xs={12} sm={6} style={{ justifyContent: "center" }}>
-        <Paper style={{ padding: "10px 10px" }}>
+    <Grid container style={{ justifyContent: "center", marginTop: 80 }}>
+      <Grid item xs={10} sm={6} md={4} style={{ justifyContent: "center" }}>
+        <Paper
+          elevation={3}
+          style={{
+            padding: "10px 10px",
+            backgroundColor: "rgb(255, 255, 255,0.5)",
+          }}
+        >
           <Grid container spacing={4}>
             <Grid
               item
@@ -165,14 +171,26 @@ function AddAddress(props) {
               xs={12}
               style={{ display: "flex", justifyContent: "center" }}
             >
-              <Button
-                disabled={!pin || !state || !region || !details}
-                color="secondary"
-                variant="contained"
-                onClick={onSubmitHandler}
-              >
-                {props.location.state.type === "add" ? "Add " : "Update"}
-              </Button>
+              {!pin || !state || !region || !details ? (
+                <Button
+                  disabled
+                  style={{ backgroundColor: "grey", color: "white" }}
+                  color="secondary"
+                  variant="contained"
+                >
+                  {props.location.state.type === "add" ? "Add " : "Update"}
+                </Button>
+              ) : (
+                <Button
+                  style={{ backgroundColor: "#419168", color: "white" }}
+                  disabled={!pin || !state || !region || !details}
+                  color="secondary"
+                  variant="contained"
+                  onClick={onSubmitHandler}
+                >
+                  {props.location.state.type === "add" ? "Add " : "Update"}
+                </Button>
+              )}
               <Message
                 open={openMessage}
                 success={!error}

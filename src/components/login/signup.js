@@ -10,8 +10,10 @@ import {
   TextField,
   Typography,
   Box,
+  FormHelperText,
 } from "@material-ui/core";
 import { Visibility, VisibilityOff } from "@material-ui/icons";
+import MaterialUiPhoneNumber from "material-ui-phone-number";
 import React, { useState } from "react";
 import { useHistory } from "react-router";
 import { postSignUp } from "../../service/dataService";
@@ -29,24 +31,47 @@ const SignUp = (props) => {
     },
     address: undefined,
   });
+  const [error, setError] = useState({
+    email: false,
+    phone: false,
+    password: false,
+    confirm: false,
+  });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [error, setError] = useState({ email: false });
   const handleEmailChange = (e) => {
-    setSignUpData({ ...signUpData, email: e.target.value });
-    if (
-      /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(
-        signUpData.email
-      )
-    ) {
-      setError({ ...setError, email: false });
-    } else setError({ ...setError, email: true });
+    let value = e.target.value;
+    setSignUpData({ ...signUpData, email: value });
+    if (value) {
+      if (
+        /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/.test(
+          value
+        )
+      ) {
+        setError({ ...setError, email: false });
+      } else setError({ ...setError, email: true });
+    } else setError({ ...setError, email: false });
   };
   const handlePasswordChange = (e) => {
+    let value = e.target.value;
+
     setSignUpData({ ...signUpData, password: e.target.value });
+    if (value) {
+      value.length < 6
+        ? setError({ ...error, password: true })
+        : setError({ ...error, password: false });
+    } else setError({ ...error, password: false });
   };
   const handleConfirmPasswordChange = (e) => {
+    let value = e.target.value;
+
     setSignUpData({ ...signUpData, confirmPassword: e.target.value });
+
+    if (value) {
+      value !== signUpData.password
+        ? setError({ ...error, confirm: true })
+        : setError({ ...error, confirm: false });
+    } else setError({ ...error, confirm: false });
   };
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
@@ -73,8 +98,9 @@ const SignUp = (props) => {
       })
       .catch((err) => console.log(err));
   };
+  console.log(signUpData);
   return (
-    <Grid container style={{ justifyContent: "center" }}>
+    <Grid container style={{ justifyContent: "center", marginTop: 80 }}>
       <Grid
         item
         xs={10}
@@ -83,10 +109,11 @@ const SignUp = (props) => {
         style={{ display: "flex", justifyContent: "center" }}
       >
         <Paper
-          square
-          variant="outlined"
-          elevation={4}
-          style={{ padding: "10px 10px 30px 10px" }}
+          elevation={3}
+          style={{
+            padding: "10px 10px 30px 10px",
+            backgroundColor: "rgb(255, 255, 255,0.5)",
+          }}
         >
           <Box
             style={{
@@ -99,7 +126,7 @@ const SignUp = (props) => {
               Sign Up
             </Typography>
           </Box>
-          <Grid container spacing={4}>
+          <Grid container spacing={3}>
             <Grid container justify="center" item md={6}>
               <TextField
                 fullWidth
@@ -142,23 +169,25 @@ const SignUp = (props) => {
                 onChange={handleEmailChange}
                 value={signUpData.email}
                 error={error.email}
+                helperText={error.email ? "Please enter a valid email" : null}
               ></TextField>
             </Grid>
             <Grid container justify="center" item xs={12}>
-              <TextField
+              <MaterialUiPhoneNumber
                 fullWidth
                 size="small"
+                defaultCountry={"in"}
                 label="Phone "
                 required
                 variant="outlined"
-                onChange={(e) =>
+                onChange={(value) =>
                   setSignUpData({
                     ...signUpData,
-                    phone: e.target.value,
+                    phone: value,
                   })
                 }
                 value={signUpData.phone}
-              ></TextField>
+              ></MaterialUiPhoneNumber>
             </Grid>
             <Grid
               item
@@ -170,10 +199,12 @@ const SignUp = (props) => {
                   Password
                 </InputLabel>
                 <OutlinedInput
+                  required
                   id="outlined-adornment-password"
                   type={showPassword ? "text" : "password"}
                   value={signUpData.password}
                   onChange={handlePasswordChange}
+                  error={error.password}
                   endAdornment={
                     <InputAdornment position="end">
                       <IconButton
@@ -187,6 +218,11 @@ const SignUp = (props) => {
                   }
                   labelWidth={70}
                 />
+                {error.password ? (
+                  <FormHelperText style={{ color: "red" }}>
+                    Password should be of minimum 5 characters
+                  </FormHelperText>
+                ) : null}
               </FormControl>
             </Grid>
             <Grid
@@ -202,6 +238,7 @@ const SignUp = (props) => {
                   id="outlined-adornment-password"
                   type={showConfirmPassword ? "text" : "password"}
                   value={signUpData.confirmPassword}
+                  error={error.confirm}
                   onChange={handleConfirmPasswordChange}
                   endAdornment={
                     <InputAdornment position="end">
@@ -220,6 +257,11 @@ const SignUp = (props) => {
                   }
                   labelWidth={130}
                 />
+                {error.confirm ? (
+                  <FormHelperText style={{ color: "red" }}>
+                    Password didn't match
+                  </FormHelperText>
+                ) : null}
               </FormControl>
             </Grid>
             <Grid
@@ -227,13 +269,36 @@ const SignUp = (props) => {
               xs={12}
               style={{ display: "flex", justifyContent: "center" }}
             >
-              <Button
-                variant="contained"
-                style={{ backgroundColor: "#419168", color: "white" }}
-                onClick={signUpHandler}
-              >
-                <Typography style={{}}>Submit</Typography>
-              </Button>
+              {!signUpData.name.first ||
+              !signUpData.name.last ||
+              !signUpData.phone ||
+              !signUpData.password ||
+              !signUpData.confirmPassword ||
+              !signUpData.email ||
+              error.password ||
+              error.confirm ||
+              error.phone ||
+              error.email ? (
+                <Button
+                  variant="contained"
+                  disabled
+                  style={{ backgroundColor: "grey", color: "white" }}
+                >
+                  <Typography style={{ fontWeight: "lighter" }}>
+                    Submit
+                  </Typography>
+                </Button>
+              ) : (
+                <Button
+                  variant="contained"
+                  style={{ backgroundColor: "#419168", color: "white" }}
+                  onClick={signUpHandler}
+                >
+                  <Typography style={{ fontWeight: "lighter" }}>
+                    Submit
+                  </Typography>
+                </Button>
+              )}
             </Grid>
             <Grid
               item
