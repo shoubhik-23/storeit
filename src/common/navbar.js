@@ -153,6 +153,7 @@ export default function PrimarySearchAppBar() {
     dispatch(action.onSearchHandler(value, visibleItems, items));
   };
   const logoutHandler = () => {
+    dispatch(action.setCart());
     localStorage.removeItem("shop_token");
     localStorage.removeItem("user_name");
     history.push("/");
@@ -195,7 +196,10 @@ export default function PrimarySearchAppBar() {
           handleMenuClose();
         }}
       >
-        My account
+        <AccountBox style={{ color: "#999966" }}></AccountBox>
+        <Typography style={{ fontSize: 16, marginLeft: "0.5rem" }}>
+          My Account
+        </Typography>
       </MenuItem>
       <MenuItem
         onClick={() => {
@@ -204,36 +208,69 @@ export default function PrimarySearchAppBar() {
           handleMenuClose();
         }}
       >
-        My Orders
+        <Bookmark style={{ color: "#999966" }}></Bookmark>
+        <Typography style={{ fontSize: 16, marginLeft: "0.5rem" }}>
+          My Orders
+        </Typography>
       </MenuItem>
       {!Token() ? (
         <MenuItem
+          style={{
+            display: "flex",
+            justifyContent: "center",
+          }}
           onClick={() => {
             history.push("/login");
             handleMenuClose();
           }}
         >
-          Login
+          <Button
+            size="small"
+            variant="contained"
+            style={{ backgroundColor: "#00cc00", color: "white" }}
+          >
+            Login
+          </Button>
         </MenuItem>
       ) : null}
       {!Token() ? (
         <MenuItem
+          style={{
+            display: "flex",
+            justifyContent: "center",
+          }}
           onClick={() => {
             history.push("/signup");
             handleMenuClose();
           }}
         >
-          SignUp
+          <Button
+            size="small"
+            variant="contained"
+            style={{ backgroundColor: "#0088cc", color: "white" }}
+          >
+            SignUp
+          </Button>{" "}
         </MenuItem>
       ) : null}
       {Token() ? (
         <MenuItem
+          style={{
+            display: "flex",
+            justifyContent: "center",
+          }}
           onClick={() => {
             logoutHandler();
             handleMenuClose();
           }}
         >
-          LogOut
+          <Button
+            size="small"
+            variant="contained"
+            style={{ backgroundColor: "#ff3300", color: "white" }}
+          >
+            LogOut
+          </Button>
         </MenuItem>
       ) : null}
     </Menu>

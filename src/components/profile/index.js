@@ -64,9 +64,9 @@ class ProfileComponent extends React.Component {
     return (
       <>
         {Token() ? (
-          <Grid container style={{ justifyContent: "center" }}>
+          <Grid container style={{ justifyContent: "center", marginTop: 80 }}>
             <Grid item xs={11} sm={6}>
-              <Paper square elevation={4}>
+              <Paper elevation={3}>
                 <Grid container>
                   {this.state.data.firstName ? (
                     <Grid

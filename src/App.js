@@ -13,12 +13,13 @@ import { Token } from "./constant/Api";
 import Order from "./components/order";
 
 function App() {
+  let token = Token();
   useEffect(() => {
-    console.log(78)
     if (!localStorage.getItem("cart")) {
       localStorage.setItem("cart", JSON.stringify([]));
     }
-  }, [Token()]);
+  }, [token]);
+  console.log(token);
 
   return (
     <>
@@ -26,10 +27,10 @@ function App() {
       <Switch>
         <Route exact path="/" component={Home}></Route>
         <Route exact path="/product" component={Product}></Route>
-        {!Token() && <Route exact path="/login" component={Login}></Route>}
+        {!token && <Route exact path="/login" component={Login}></Route>}
 
-        {!Token() && <Route exact path="/signup" component={SignUp}></Route>}
-      <Route exact path="/orders" component={Order}></Route>
+        {!token && <Route exact path="/signup" component={SignUp}></Route>}
+        <Route exact path="/orders" component={Order}></Route>
 
         <Route exact path="/cart" component={Cart}></Route>
         <Route exact path="/profile" component={ProfileComponent}></Route>

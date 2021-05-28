@@ -1,6 +1,9 @@
 {
   "name": "store_it",
   "version": "0.1.0",
+  "author": {
+    "name": "Shoubhik Maji"
+  },
   "private": true,
   "dependencies": {
     "@fontsource/roboto": "^4.3.0",

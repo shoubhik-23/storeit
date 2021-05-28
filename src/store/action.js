@@ -3,7 +3,7 @@ import { getCart, getIndex } from "../service/dataService";
 
 export const getAllItems = () => {
   return (dispatch) => {
-  return  getIndex()
+    return getIndex()
       .then((resp) => resp.json())
       .then((data) => {
         return dispatch({ type: "getIndex", data: data.data });

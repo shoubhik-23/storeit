@@ -6,12 +6,13 @@ import {
   TextField,
   Typography,
 } from "@material-ui/core";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useHistory } from "react-router";
 import Message from "../../common/message";
 import { addAddress } from "../../service/dataService";
 
 function AddAddress(props) {
+  const ref = useRef();
   const [openMessage, setOpenMessage] = useState(false);
   const [error, setError] = useState(false);
   const [message, setMessage] = useState("");
@@ -21,6 +22,9 @@ function AddAddress(props) {
   const [pin, setPin] = useState(props.location.state.pin || "");
   const history = useHistory();
   console.log(history);
+  useEffect(() => {
+    ref.current.focus();
+  }, []);
 
   const selectRegion = (e) => {
     setRegion(e.target.value);
@@ -106,6 +110,7 @@ function AddAddress(props) {
             >
               <TextField
                 size="small"
+                inputRef={ref}
                 fullWidth
                 required
                 id="outlined-read-only-input"

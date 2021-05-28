@@ -25,18 +25,17 @@ class Home extends Component {
     visibleItems: this.props.visibleItems,
     searchOn: this.props.searchOn,
     page: {
-      recordsPerPage: this.props.width === "xs" ? 6 : 1,
-      page: 1,
-      totalPage: 1,
+      recordsPerPage: this.props.recordsPerPage,
+      page: this.props.page,
+      totalPage: this.props.totalPage,
     },
   };
   componentDidMount() {
     this.props.getAllItems().then((res) => {
       let page = { ...this.state.page };
-      page.recordsPerPage = this.props.width === "xs" ? 6 : 12;
-      page.totalPage = Math.ceil(
-        this.state.visibleItems.length / page.recordsPerPage
-      );
+      page.recordsPerPage = this.props.recordsPerPage;
+      page.page = this.props.page;
+      page.totalPage = this.props.totalPage;
 
       this.setState({ loading: false, page: page });
     });
@@ -48,10 +47,9 @@ class Home extends Component {
       this.setState({
         page: {
           ...this.state.page,
-          totalPage: Math.ceil(
-            this.state.visibleItems.length / this.state.page.recordsPerPage
-          ),
-          recordsPerPage: this.props.width === "xs" ? 6 : 12,
+          page: this.props.page,
+          totalPage: this.props.totalPage,
+          recordsPerPage: this.props.recordsPerPage,
         },
         loading: false,
         items: this.props.items,
@@ -116,14 +114,6 @@ class Home extends Component {
                 xs={12}
                 style={{ display: "flex", justifyContent: "center" }}
               >
-                {/* <PaginationComponent
-                  {...this.state.page}
-                  pageChange={(value) => {
-                    this.setState({
-                      page: { ...this.state.page, page: value },
-                    });
-                  }}
-                /> */}
                 <PaginationComponent
                   {...this.state.page}
                   pageChange={(event, value) => {
@@ -146,6 +136,9 @@ const mapStateToProps = (state) => {
     items: state.items,
     visibleItems: state.visibleItems,
     searchOn: state.searchOn,
+    page: state.page,
+    totalPage: state.totalPage,
+    recordsPerPage: state.recordsPerPage,
   };
 };
 const mapDispatchToProps = (dispatch) => {

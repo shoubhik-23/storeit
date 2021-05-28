@@ -18,6 +18,7 @@ import { Token } from "../../constant/Api";
 import { useHistory } from "react-router";
 import { connect } from "react-redux";
 import CustomizedSnackbars from "../../common/alert";
+import * as action from "../../store/action";
 
 class Login extends React.Component {
   state = {
@@ -57,6 +58,7 @@ class Login extends React.Component {
       .then((resp) => resp.json())
       .then((data) => {
         if (data.message === "success") {
+          this.props.setCart();
           localStorage.setItem("shop_token", data.token);
           localStorage.setItem("shop_id", data.userId);
           localStorage.setItem("user_name", data.name);
@@ -205,5 +207,9 @@ class Login extends React.Component {
     );
   }
 }
-
-export default Login;
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setCart: () => dispatch(action.setCart()),
+  };
+};
+export default connect(null, mapDispatchToProps)(Login);
