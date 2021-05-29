@@ -12,9 +12,9 @@ import React from "react";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 
 function Message(props) {
-  console.log(props);
   return (
     <Dialog
+      maxWidth="xs"
       onClose={props.handleClose}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
@@ -65,7 +65,7 @@ function Message(props) {
               onClick={props.handleClose}
               style={{ backgroundColor: "#419168", color: "white" }}
             >
-              OK
+              Okay
             </Button>
           </Grid>
         </Grid>

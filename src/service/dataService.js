@@ -98,3 +98,22 @@ export const getOrders = () => {
     },
   });
 };
+export const postReset = (data) => {
+  return fetch(`${API_POINT}/auth/password-reset`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+};
+
+export const postNewPassword = (token, data) => {
+  return fetch(`${API_POINT}/auth/newpassword-reset/${token}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+};

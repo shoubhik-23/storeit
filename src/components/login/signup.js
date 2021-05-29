@@ -112,7 +112,7 @@ const SignUp = (props) => {
           elevation={3}
           style={{
             padding: "10px 10px 30px 10px",
-            backgroundColor: "rgb(255, 255, 255,0.5)",
+            backgroundColor: "#F8F5E8",
           }}
         >
           <Box

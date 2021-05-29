@@ -24,7 +24,8 @@ export const reducer = (state = initialState, action) => {
       let filter = items.filter(
         (el) =>
           el.title.toLowerCase().indexOf(value.toLowerCase()) > -1 ||
-          el.category.toLowerCase().indexOf(value.toLowerCase()) > -1
+          el.category.toLowerCase().indexOf(value.toLowerCase()) > -1 ||
+          el.price.toString().toLowerCase().indexOf(value.toLowerCase()) > -1
       );
       return {
         ...state,

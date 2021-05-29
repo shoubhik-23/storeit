@@ -11,35 +11,14 @@ import Menu from "@material-ui/core/Menu";
 import MenuIcon from "@material-ui/icons/Menu";
 import SearchIcon from "@material-ui/icons/Search";
 import AccountCircle from "@material-ui/icons/AccountCircle";
-import MailIcon from "@material-ui/icons/Mail";
 import * as action from "../store/action";
 
 import { useHistory } from "react-router-dom";
-import InboxIcon from "@material-ui/icons/MoveToInbox";
 import Logo from "../assets/images/logo7.png";
 import clsx from "clsx";
 
-import {
-  AccountBox,
-  Bookmark,
-  CallToAction,
-  Home,
-  ShopOutlined,
-  ShoppingBasketOutlined,
-  ShoppingCart,
-} from "@material-ui/icons";
-import {
-  Box,
-  Button,
-  Divider,
-  Drawer,
-  Grid,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  TextField,
-} from "@material-ui/core";
+import { AccountBox, Bookmark, Home, ShoppingCart } from "@material-ui/icons";
+import { Box, Button, Drawer, Grid } from "@material-ui/core";
 import { Token } from "../constant/Api";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -153,10 +132,12 @@ export default function PrimarySearchAppBar() {
     dispatch(action.onSearchHandler(value, visibleItems, items));
   };
   const logoutHandler = () => {
-    dispatch(action.setCart());
     localStorage.removeItem("shop_token");
     localStorage.removeItem("user_name");
+    dispatch(action.setCart());
+
     history.push("/");
+    window.location.reload();
   };
   const history = useHistory();
   const classes = useStyles();
@@ -312,7 +293,6 @@ export default function PrimarySearchAppBar() {
         <AccountCircle
           className={classes.mobileAccountCircleccountCircle}
           style={{ fontSize: 50, color: "silver" }}
-          onClick={handleProfileMenuOpen}
         />
         <Typography style={{ fontSize: 25, opacity: 0.8 }}>
           Hello&nbsp;

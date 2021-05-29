@@ -124,8 +124,7 @@ function HomeCards(props) {
         elevation={3}
         style={{
           padding: "5px 5px",
-          boxSizing: "border-box",
-          backgroundColor: "rgb(255, 255, 255,0.6)",
+          backgroundColor: "#F8F5E8",
         }}
       >
         <Grid container className={classes.card}>
@@ -214,27 +213,20 @@ function HomeCards(props) {
             }}
           >
             {loading ? (
-              <Button
-                variant="contained"
-                disabled
-                onClick={addCartHandler}
-                style={{
-                  width: "50%",
-                }}
-              >
+              <Button size="small" variant="contained" disabled>
                 <CircularProgress size={24}></CircularProgress>
               </Button>
             ) : (
               <Button
+                size="small"
                 variant="contained"
                 onClick={addCartHandler}
                 style={{
-                  backgroundColor: "#ffff66",
-                  fontWeight: 600,
-                  width: "50%",
+                  backgroundColor: "#419168",
+                  color: "white",
                 }}
               >
-                Add
+                Add To Cart
               </Button>
             )}
           </Grid>

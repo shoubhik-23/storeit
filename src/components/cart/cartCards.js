@@ -110,7 +110,7 @@ function CartCards(props) {
       style={{
         padding: "5px 5px",
         boxSizing: "border-box",
-        backgroundColor: "rgb(255, 255, 255,0.5)",
+        backgroundColor: "#F8F5E8",
       }}
     >
       <Grid container style={{ padding: 0, minHeight: 30 }}>
@@ -207,6 +207,7 @@ function CartCards(props) {
         >
           {loading ? (
             <Button
+              size="small"
               disabled
               style={{
                 width: "50%",
@@ -220,6 +221,7 @@ function CartCards(props) {
             </Button>
           ) : (
             <Button
+              size="small"
               style={{
                 width: "50%",
                 backgroundColor: " #ff5c33 ",

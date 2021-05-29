@@ -56,21 +56,22 @@ class Login extends React.Component {
   loginHandler = async () => {
     postLogin({ email: this.state.email, password: this.state.password })
       .then((resp) => resp.json())
-      .then((data) => {
+      .then(async (data) => {
         if (data.message === "success") {
           this.props.setCart();
           localStorage.setItem("shop_token", data.token);
           localStorage.setItem("shop_id", data.userId);
           localStorage.setItem("user_name", data.name);
-          localStorage.setItem("cart", JSON.stringify([]));
 
-          this.setState({ token: localStorage.getItem("shop_token") }, () =>
-            addLocalToCart(
-              JSON.parse(localStorage.getItem("cart")),
-              this.state.token
-            )
-          );
-          this.props.history.push("/");
+          this.setState({ token: localStorage.getItem("shop_token") });
+          addLocalToCart(
+            localStorage.getItem("cart"),
+            localStorage.getItem("shop_token")
+          ).then((data) => {
+            localStorage.setItem("cart", JSON.stringify([]));
+            window.location.reload();
+            this.props.history.push("/");
+          });
         } else {
           this.setState({ open: true, message: data.message });
         }
@@ -91,7 +92,7 @@ class Login extends React.Component {
             elevation={3}
             style={{
               padding: "20px 10px 30px 10px",
-              backgroundColor: "rgb(255, 255, 255,0.5)",
+              backgroundColor: "#F8F5E8",
             }}
           >
             <Box
@@ -179,6 +180,22 @@ class Login extends React.Component {
                     </Typography>
                   </Button>
                 )}
+              </Grid>
+              <Grid
+                item
+                xs={12}
+                style={{ display: "flex", justifyContent: "center" }}
+              >
+                <Typography
+                  onClick={() => this.props.history.push("/forget")}
+                  style={{
+                    color: "blue",
+                    margin: "-15px 0px",
+                    cursor: "pointer",
+                  }}
+                >
+                  Forgot Password?
+                </Typography>
               </Grid>
               <Grid
                 item

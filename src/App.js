@@ -11,6 +11,9 @@ import AddAddress from "./components/profile/addAddress";
 import "@fontsource/roboto";
 import { Token } from "./constant/Api";
 import Order from "./components/order";
+import PasswordForgot from "./components/reset/forgot";
+import NewPassword from "./components/reset/newPassword";
+import { API_POINT } from "./constant/Api";
 
 function App() {
   let token = Token();
@@ -35,6 +38,13 @@ function App() {
         <Route exact path="/cart" component={Cart}></Route>
         <Route exact path="/profile" component={ProfileComponent}></Route>
         <Route exact path="/profile/address" component={AddAddress}></Route>
+        <Route exact path="/forget" component={PasswordForgot}></Route>
+        <Route
+          exact
+          path="/auth/password-reset/:token"
+          component={NewPassword}
+        ></Route>
+
         <Redirect to="/"></Redirect>
       </Switch>
     </>

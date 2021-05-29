@@ -57,6 +57,8 @@ class ProfileComponent extends React.Component {
   }
   logoutHandler = () => {
     localStorage.removeItem("shop_token");
+    localStorage.removeItem("user_name");
+
     this.props.setCart();
     this.props.history.push("/");
   };

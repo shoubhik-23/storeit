@@ -79,7 +79,7 @@ const Product = (props) => {
           elevation={3}
           style={{
             padding: "10px 10px",
-            backgroundColor: "rgb(255, 255, 255,0.6)",
+            backgroundColor: "#F8F5E8",
           }}
         >
           <Grid container spacing={0}>
