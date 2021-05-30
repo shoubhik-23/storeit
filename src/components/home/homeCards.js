@@ -13,6 +13,7 @@ import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { API_POINT, Token } from "../../constant/Api";
 import { addToCart, getProductDetail } from "../../service/dataService";
+import { useSpring, animated } from "react-spring";
 
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -27,8 +28,28 @@ const style = makeStyles((theme) => ({
     color: "white",
     borderRadius: "1px 2px 50% 50%",
   },
+  imageBox: {
+    height: 100,
+
+    width: 50,
+    backgroundColor: "grey",
+    display: "flex",
+
+    justifyContent: "center",
+  },
 }));
 function HomeCards(props) {
+  const [flip, set] = useState(false);
+
+  const anim = useSpring({
+    config: { duration: 1000 },
+    reset: true,
+    reverse: flip,
+    to: { opacity: 1 },
+    from: { opacity: 0 },
+    onRest: () => set(!flip),
+  });
+
   const classes = style();
   const [data, setData] = useState(props.data);
 
@@ -36,6 +57,7 @@ function HomeCards(props) {
 
   const [quantity, setQuantity] = useState(0);
   const dispatch = useDispatch();
+  const [imageLoaded, setImageLoaded] = useState(false);
   const [loading, setLoading] = useState(false);
   const [titleUpper, setTitleUpper] = useState(props.data.title.slice(0, 20));
   const [titleLower, setTitleLower] = useState(props.data.title.slice(20));
@@ -136,25 +158,22 @@ function HomeCards(props) {
               justifyContent: "center",
             }}
           >
-            <Box
-              style={{
-                height: 100,
-                width: 50,
-                display: "flex",
-
-                justifyContent: "center",
-              }}
+            <animated.div
+              className={classes.imageBox}
+              style={!imageLoaded ? anim : null}
             >
               <img
+                onLoad={() => setImageLoaded(true)}
                 style={{
                   height: "100%",
+                  visibility: imageLoaded ? "visible" : "hidden",
                   width: "100%",
                   imageRendering: "crisp-edges",
                 }}
                 src={API_POINT + "/" + data.image}
                 alt="home"
               ></img>
-            </Box>
+            </animated.div>
           </Grid>
           <Grid
             item

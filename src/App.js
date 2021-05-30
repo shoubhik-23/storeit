@@ -22,7 +22,6 @@ function App() {
       localStorage.setItem("cart", JSON.stringify([]));
     }
   }, [token]);
-  console.log(token);
 
   return (
     <>

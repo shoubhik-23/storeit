@@ -21,7 +21,6 @@ function AddAddress(props) {
   const [details, setDetails] = useState(props.location.state.detail || "");
   const [pin, setPin] = useState(props.location.state.pin || "");
   const history = useHistory();
-  console.log(history);
   useEffect(() => {
     ref.current.focus();
   }, []);
@@ -70,8 +69,6 @@ function AddAddress(props) {
     fetch(`https://api.postalpincode.in/pincode/${pin}`)
       .then((resp) => resp.json())
       .then((data) => {
-        console.log(data);
-
         setRegion(data[0].PostOffice[0].District);
         setState(data[0].PostOffice[0].State);
       })

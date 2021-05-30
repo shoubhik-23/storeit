@@ -20,7 +20,6 @@ import { useHistory, useParams } from "react-router";
 function NewPassword(props) {
   const history = useHistory();
   const param = useParams().token;
-  console.log(param);
   const [signUpData, setSignUpData] = useState({
     password: "",
     confirmPassword: "",

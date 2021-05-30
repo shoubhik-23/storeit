@@ -98,7 +98,6 @@ const SignUp = (props) => {
       })
       .catch((err) => console.log(err));
   };
-  console.log(signUpData);
   return (
     <Grid container style={{ justifyContent: "center", marginTop: 80 }}>
       <Grid

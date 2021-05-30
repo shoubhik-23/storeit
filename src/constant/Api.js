@@ -4,3 +4,4 @@ export const Token = () => {
 };
 
 // storeit-in.herokuapp.com
+// http://localhost:8080
