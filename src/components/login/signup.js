@@ -16,10 +16,13 @@ import { Visibility, VisibilityOff } from "@material-ui/icons";
 import MaterialUiPhoneNumber from "material-ui-phone-number";
 import React, { useState } from "react";
 import { useHistory } from "react-router";
+import CustomizedSnackbars from "../../common/alert";
 import { postSignUp } from "../../service/dataService";
 
 const SignUp = (props) => {
   const history = useHistory();
+  const [snackOpen, setSnackOpen] = useState(false);
+  const [snackMessage, setSnackMessage] = useState("");
   const [signUpData, setSignUpData] = useState({
     email: "",
     password: "",
@@ -93,10 +96,14 @@ const SignUp = (props) => {
         if (data.message === "success") {
           history.push("/login");
         } else {
-          alert("Error");
+          setSnackMessage(data.message);
+          setSnackOpen(true);
         }
       })
       .catch((err) => console.log(err));
+  };
+  const handleCloseSnack = () => {
+    setSnackOpen(false);
   };
   return (
     <Grid container style={{ justifyContent: "center", marginTop: 80 }}>
@@ -317,6 +324,7 @@ const SignUp = (props) => {
           </Grid>
         </Paper>
       </Grid>
+      <CustomizedSnackbars handleClose={handleCloseSnack}></CustomizedSnackbars>
     </Grid>
   );
 };
