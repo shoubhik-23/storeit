@@ -324,7 +324,11 @@ const SignUp = (props) => {
           </Grid>
         </Paper>
       </Grid>
-      <CustomizedSnackbars handleClose={handleCloseSnack}></CustomizedSnackbars>
+      <CustomizedSnackbars
+        open={snackOpen}
+        message={snackMessage}
+        handleClose={handleCloseSnack}
+      ></CustomizedSnackbars>
     </Grid>
   );
 };

@@ -44,6 +44,7 @@ class Order extends Component {
       .then((data) => {
         data?.message === "success" &&
           this.setState({ data: [...data.data], loading: false });
+        this.setState({ loading: false });
       })
       .catch((err) => {
         this.setState({ loading: false });
