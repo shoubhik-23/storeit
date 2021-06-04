@@ -23,9 +23,9 @@ function AddAddress(props) {
   const [details, setDetails] = useState(props.location.state.detail || "");
   const [pin, setPin] = useState(props.location.state.pin || "");
   const history = useHistory();
-  useEffect(() => {
-    ref.current.focus();
-  }, []);
+  // useEffect(() => {
+  //   ref.current.focus();
+  // }, []);
 
   const selectRegion = (e) => {
     setRegion(e.target.value);
@@ -80,35 +80,17 @@ function AddAddress(props) {
     setOpenMessage(false);
     history.push("/profile");
   };
-  const HOC = ({ children }) => {
-    let comp;
-    props.width === "xs"
-      ? (comp = (
-          <Paper
-            elevation={3}
-            style={{
-              padding: "10px 10px",
-            }}
-          >
-            {children}
-          </Paper>
-        ))
-      : (comp = (
-          <Paper
-            elevation={3}
-            style={{
-              padding: "10px 10px",
-            }}
-          >
-            {children}
-          </Paper>
-        ));
-    return comp;
-  };
+
   return (
     <Grid container style={{ justifyContent: "center", marginTop: 80 }}>
       <Grid item xs={11} sm={6} md={4} style={{ justifyContent: "center" }}>
-        <HOC>
+        <Paper
+          elevation={3}
+          style={{
+            padding: "10px 10px",
+          }}
+        >
+          {" "}
           <Grid container spacing={4}>
             <Grid
               item
@@ -222,7 +204,7 @@ function AddAddress(props) {
               ></Message>
             </Grid>
           </Grid>
-        </HOC>
+        </Paper>
       </Grid>
     </Grid>
   );

@@ -74,9 +74,33 @@ class Order extends Component {
                   textDecoration: "underline",
                 }}
               >
-                My Order
+                My Orders
               </Typography>
             </Grid>
+            {this.state.data.length === 0 && (
+              <Grid item xs={12}>
+                <Typography>You havent placed any order yet</Typography>
+              </Grid>
+            )}
+            {this.state.data.length === 0 && (
+              <Grid
+                item
+                xs={12}
+                style={{ display: "flex", justifyContent: "center" }}
+              >
+                <Button
+                  style={{
+                    backgroundColor: "#419168",
+                    color: "white",
+
+                    fontWeight: 600,
+                  }}
+                  onClick={() => this.props.history.push("/")}
+                >
+                  Click to Explore
+                </Button>
+              </Grid>
+            )}
             {this.state.loading ? (
               <Grid
                 item
@@ -86,7 +110,6 @@ class Order extends Component {
                 <CircularProgress></CircularProgress>
               </Grid>
             ) : (
-              this.state.data.length > 0 &&
               this.state.data.map((el) => (
                 <Grid item xs={12}>
                   <OrderCards data={el}></OrderCards>

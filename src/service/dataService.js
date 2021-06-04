@@ -127,3 +127,12 @@ export const getInvoice = (data) => {
     body: JSON.stringify(data),
   });
 };
+export const postGoogleLogin = (data) => {
+  return fetch(`${API_POINT}/auth/googleLogin`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+};

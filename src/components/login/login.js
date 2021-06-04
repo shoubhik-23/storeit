@@ -13,12 +13,18 @@ import {
   Typography,
 } from "@material-ui/core";
 import { Visibility, VisibilityOff } from "@material-ui/icons";
-import { addLocalToCart, postLogin } from "../../service/dataService";
+import {
+  addLocalToCart,
+  postLogin,
+  postGoogleLogin,
+} from "../../service/dataService";
 import { Token } from "../../constant/Api";
 import { useHistory } from "react-router";
 import { connect } from "react-redux";
 import CustomizedSnackbars from "../../common/alert";
 import * as action from "../../store/action";
+import GoogleLogin from "react-google-login";
+import GoogleButton from "react-google-button";
 
 class Login extends React.Component {
   state = {
@@ -55,6 +61,31 @@ class Login extends React.Component {
   };
   loginHandler = async () => {
     postLogin({ email: this.state.email, password: this.state.password })
+      .then((resp) => resp.json())
+      .then(async (data) => {
+        if (data.message === "success") {
+          this.props.setCart();
+          localStorage.setItem("shop_token", data.token);
+          localStorage.setItem("shop_id", data.userId);
+          localStorage.setItem("user_name", data.name);
+
+          this.setState({ token: localStorage.getItem("shop_token") });
+          addLocalToCart(
+            localStorage.getItem("cart"),
+            localStorage.getItem("shop_token")
+          ).then((data) => {
+            localStorage.setItem("cart", JSON.stringify([]));
+            window.location.reload();
+            this.props.history.push("/");
+          });
+        } else {
+          this.setState({ open: true, message: data.message });
+        }
+      })
+      .catch((err) => console.log(err));
+  };
+  responseGoogle = (response) => {
+    postGoogleLogin({ token: response.tokenId })
       .then((resp) => resp.json())
       .then(async (data) => {
         if (data.message === "success") {
@@ -179,6 +210,27 @@ class Login extends React.Component {
                     </Typography>
                   </Button>
                 )}
+              </Grid>
+              <Grid
+                item
+                xs={12}
+                style={{ display: "flex", justifyContent: "center" }}
+              >
+                <GoogleLogin
+                  style={{ border: "solid" }}
+                  clientId={process.env.REACT_APP_API_KEY}
+                  render={(renderProps) => (
+                    <GoogleButton
+                      style={{}}
+                      label="Sign in with Google"
+                      onClick={renderProps.onClick}
+                      disabled={renderProps.disabled}
+                    ></GoogleButton>
+                  )}
+                  onSuccess={this.responseGoogle}
+                  onFailure={this.responseGoogle}
+                  cookiePolicy={"single_host_origin"}
+                ></GoogleLogin>
               </Grid>
               <Grid
                 item
