@@ -110,7 +110,6 @@ function CartCards(props) {
       style={{
         padding: "5px 5px",
         boxSizing: "border-box",
-        backgroundColor: "#F8F5E8",
       }}
     >
       <Grid container style={{ padding: 0, minHeight: 30 }}>

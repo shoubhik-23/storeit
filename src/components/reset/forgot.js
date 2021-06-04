@@ -67,9 +67,7 @@ function PasswordForgot(props) {
   return (
     <Grid container style={{ marginTop: 80, justifyContent: "center" }}>
       <Grid item xs={10} sm={6} md={4}>
-        <Paper
-          style={{ backgroundColor: "#F8F5E8", padding: "20px 10px 20px 10px" }}
-        >
+        <Paper style={{ padding: "20px 10px 20px 10px" }}>
           <Grid
             container
             spacing={3}

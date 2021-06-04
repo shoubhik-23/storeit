@@ -75,87 +75,79 @@ const Product = (props) => {
       style={{ marginTop: 80, display: "flex", justifyContent: "center" }}
     >
       <Grid item xs={props.width === "xs" ? 11 : 8}>
-        <Paper
-          elevation={3}
-          style={{
-            padding: "10px 10px",
-            backgroundColor: "#F8F5E8",
-          }}
-        >
-          <Grid container spacing={0}>
-            <Grid
-              item
-              xs={12}
-              md={4}
-              style={{
-                display: "flex",
-                justifyContent: "center",
-              }}
-            >
-              <Box style={{ height: 200, width: 100 }}>
-                <img
-                  style={{ height: "100%", width: "100%" }}
-                  src={`${API_POINT}/${data.image}`}
-                  alt="productImage"
-                ></img>
-              </Box>
-            </Grid>
+        <Grid container spacing={0}>
+          <Grid
+            item
+            xs={12}
+            md={4}
+            style={{
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
+            <Box style={{ height: 200, width: 100 }}>
+              <img
+                style={{ height: "100%", width: "100%" }}
+                src={`${API_POINT}/${data.image}`}
+                alt="productImage"
+              ></img>
+            </Box>
+          </Grid>
 
-            <Grid container item xs={12} md={8}>
-              <Grid item xs={12}>
-                <Typography
-                  style={{
-                    color: "red",
-                    fontSize: "1.5rem",
-                    fontWeight: 600,
-                  }}
-                >
-                  {" "}
-                  ₹ {data.price}
-                </Typography>
-              </Grid>
-              <Grid item xs={12}>
-                {description.map((el, i) => (
-                  <Box style={{ display: "flex" }}>
-                    <div>&#9830;</div>
-                    <Typography
-                      key={i}
-                      style={{ marginLeft: "1rem", fontSize: 14 }}
-                    >
-                      {el.trim()}
-                    </Typography>
-                  </Box>
-                ))}
-              </Grid>
+          <Grid container item xs={12} md={8}>
+            <Grid item xs={12}>
+              <Typography
+                style={{
+                  color: "red",
+                  fontSize: "1.5rem",
+                  fontWeight: 600,
+                }}
+              >
+                {" "}
+                ₹ {data.price}
+              </Typography>
             </Grid>
-            <Grid
-              item
-              xs={12}
-              style={{ display: "flex", justifyContent: "center" }}
-            >
-              {loading ? (
-                <Button
-                  style={{ margin: "10px 10px" }}
-                  variant="contained"
-                  color="secondary"
-                  disabled
-                  onClick={addCartHandler}
-                >
-                  <CircularProgress size={24}></CircularProgress>
-                </Button>
-              ) : (
-                <Button
-                  style={{ margin: "10px 10px" }}
-                  variant="contained"
-                  color="secondary"
-                  onClick={addCartHandler}
-                >
-                  Add To Cart
-                </Button>
-              )}
+            <Grid item xs={12}>
+              {description.map((el, i) => (
+                <Box style={{ display: "flex" }}>
+                  <div>&#9830;</div>
+                  <Typography
+                    key={i}
+                    style={{ marginLeft: "1rem", fontSize: 14 }}
+                  >
+                    {el.trim()}
+                  </Typography>
+                </Box>
+              ))}
             </Grid>
           </Grid>
-        </Paper>
+          <Grid
+            item
+            xs={12}
+            style={{ display: "flex", justifyContent: "center" }}
+          >
+            {loading ? (
+              <Button
+                style={{ margin: "10px 10px" }}
+                variant="contained"
+                color="secondary"
+                disabled
+                onClick={addCartHandler}
+              >
+                <CircularProgress size={24}></CircularProgress>
+              </Button>
+            ) : (
+              <Button
+                style={{ margin: "10px 10px" }}
+                variant="contained"
+                color="secondary"
+                onClick={addCartHandler}
+              >
+                Add To Cart
+              </Button>
+            )}
+          </Grid>
+        </Grid>
       </Grid>
     </Grid>
   );

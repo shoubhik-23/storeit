@@ -117,3 +117,13 @@ export const postNewPassword = (token, data) => {
     body: JSON.stringify(data),
   });
 };
+export const getInvoice = (data) => {
+  return fetch(`${API_POINT}/order/invoice`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `${Token()}`,
+    },
+    body: JSON.stringify(data),
+  });
+};

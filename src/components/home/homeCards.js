@@ -124,103 +124,83 @@ function HomeCards(props) {
       setLoading(false);
     }
   };
-  const HOC = (props) => {
-    let comp;
-    quantity > 0
-      ? (comp = (
-          <Badge
-            badgeContent={quantity}
-            classes={{
-              badge: classes.root,
-            }}
-          >
-            {props.children}
-          </Badge>
-        ))
-      : (comp = <div>{props.children}</div>);
-    return comp;
-  };
+
   return (
-    <HOC badgeContent={quantity} style={{ backgroundColor: "white" }}>
-      <Paper
-        elevation={3}
-        style={{
-          padding: "5px 5px",
-          backgroundColor: "#F8F5E8",
-        }}
-      >
-        <Grid container className={classes.card}>
+    <Paper
+      elevation={3}
+      style={{
+        padding: "5px 5px",
+        position: "relative",
+      }}
+    >
+      {quantity > 0 && (
+        <div
+          style={{
+            position: "absolute",
+            right: 0,
+            backgroundColor: "#cccccc",
+            borderRadius: "0px 0px 0px 10px",
+            padding: "1%",
+            marginTop: -5,
+            fontSize: props.width === "xs" ? "0.8rem" : "1rem",
+          }}
+        >
+          {quantity} in cart
+        </div>
+      )}
+      <Grid container className={classes.card}>
+        <Grid
+          item
+          xs={12}
+          style={{
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <animated.div
+            className={classes.imageBox}
+            style={!imageLoaded ? anim : null}
+          >
+            <img
+              onLoad={() => setImageLoaded(true)}
+              style={{
+                height: "100%",
+                visibility: imageLoaded ? "visible" : "hidden",
+                width: "100%",
+                imageRendering: "crisp-edges",
+              }}
+              src={API_POINT + "/" + data.image}
+              alt="home"
+            ></img>
+          </animated.div>
+        </Grid>
+        <Grid
+          item
+          container
+          xs={12}
+          style={{
+            cursor: "pointer",
+          }}
+          onClick={() =>
+            history.push({
+              pathname: "/product",
+              state: {
+                data: data,
+              },
+            })
+          }
+        >
           <Grid
             item
             xs={12}
             style={{
               display: "flex",
               justifyContent: "center",
+              width: 100,
             }}
           >
-            <animated.div
-              className={classes.imageBox}
-              style={!imageLoaded ? anim : null}
-            >
-              <img
-                onLoad={() => setImageLoaded(true)}
-                style={{
-                  height: "100%",
-                  visibility: imageLoaded ? "visible" : "hidden",
-                  width: "100%",
-                  imageRendering: "crisp-edges",
-                }}
-                src={API_POINT + "/" + data.image}
-                alt="home"
-              ></img>
-            </animated.div>
-          </Grid>
-          <Grid
-            item
-            container
-            xs={12}
-            style={{
-              cursor: "pointer",
-            }}
-            onClick={() =>
-              history.push({
-                pathname: "/product",
-                state: {
-                  data: data,
-                },
-              })
-            }
-          >
-            <Grid
-              item
-              xs={12}
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                width: 100,
-              }}
-            >
-              <Typography noWrap style={{ textAlign: "center" }}>
-                {titleUpper}
-              </Typography>
-            </Grid>
-            <Grid
-              item
-              xs={12}
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                width: 100,
-              }}
-            >
-              <Typography noWrap style={{ textAlign: "center" }}>
-                {titleLower}
-              </Typography>
-            </Grid>
-          </Grid>
-          <Grid item xs={12}>
-            <Typography style={{ textAlign: "center", color: "#ff0000" }}>
-              ₹ {data.price}
+            <Typography noWrap style={{ textAlign: "center" }}>
+              {titleUpper}
             </Typography>
           </Grid>
           <Grid
@@ -229,29 +209,47 @@ function HomeCards(props) {
             style={{
               display: "flex",
               justifyContent: "center",
+              width: 100,
             }}
           >
-            {loading ? (
-              <Button size="small" variant="contained" disabled>
-                <CircularProgress size={24}></CircularProgress>
-              </Button>
-            ) : (
-              <Button
-                size="small"
-                variant="contained"
-                onClick={addCartHandler}
-                style={{
-                  backgroundColor: "#419168",
-                  color: "white",
-                }}
-              >
-                Add To Cart
-              </Button>
-            )}
+            <Typography noWrap style={{ textAlign: "center" }}>
+              {titleLower}
+            </Typography>
           </Grid>
         </Grid>
-      </Paper>
-    </HOC>
+        <Grid item xs={12}>
+          <Typography style={{ textAlign: "center", color: "#ff0000" }}>
+            ₹ {data.price}
+          </Typography>
+        </Grid>
+        <Grid
+          item
+          xs={12}
+          style={{
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          {loading ? (
+            <Button size="small" variant="contained" disabled>
+              <CircularProgress size={24}></CircularProgress>
+            </Button>
+          ) : (
+            <Button
+              size="small"
+              variant="contained"
+              onClick={addCartHandler}
+              style={{
+                backgroundColor: "#419168",
+                color: "white",
+              }}
+            >
+              Add To Cart
+            </Button>
+          )}
+        </Grid>
+      </Grid>
+    </Paper>
   );
 }
 

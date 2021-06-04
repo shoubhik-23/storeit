@@ -109,7 +109,7 @@ const SignUp = (props) => {
     <Grid container style={{ justifyContent: "center", marginTop: 80 }}>
       <Grid
         item
-        xs={10}
+        xs={11}
         sm={6}
         md={4}
         style={{ display: "flex", justifyContent: "center" }}
@@ -118,7 +118,6 @@ const SignUp = (props) => {
           elevation={3}
           style={{
             padding: "10px 10px 30px 10px",
-            backgroundColor: "#F8F5E8",
           }}
         >
           <Box

@@ -1,5 +1,7 @@
 import { Button, Grid, Paper, Typography } from "@material-ui/core";
 import React from "react";
+import { API_POINT } from "../../constant/Api";
+import { getInvoice } from "../../service/dataService";
 
 function OrderCards(props) {
   const calculatePrice = () => {
@@ -11,7 +13,12 @@ function OrderCards(props) {
     }
     return totalPrice;
   };
-  console.log(props);
+  const getInvoiceDetail = async () => {
+    await getInvoice({ orderId: props.data._id })
+      .then((res) => res.json())
+      .then((data) => window.open(`${API_POINT}/${data.data}`))
+      .catch((err) => console.log(err));
+  };
   return (
     <>
       <Paper
@@ -66,6 +73,7 @@ function OrderCards(props) {
               size="small"
               variant="outlined"
               style={{ backgroundColor: "#62c8f0" }}
+              onClick={getInvoiceDetail}
             >
               Get Invoice
             </Button>
