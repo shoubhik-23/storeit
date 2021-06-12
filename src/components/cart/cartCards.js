@@ -133,7 +133,7 @@ function CartCards(props) {
                 width: "100%",
                 imageRendering: "crisp-edges",
               }}
-              src={API_POINT + "/" + data.product.image}
+              src={data.product.image}
               alt="item"
             ></img>
           </Box>

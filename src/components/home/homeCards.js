@@ -169,7 +169,7 @@ function HomeCards(props) {
                 width: "100%",
                 imageRendering: "crisp-edges",
               }}
-              src={API_POINT + "/" + data.image}
+              src={data.image}
               alt="home"
             ></img>
           </animated.div>

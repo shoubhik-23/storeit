@@ -11,8 +11,14 @@ import {
   Paper,
   TextField,
   Typography,
+  withWidth,
 } from "@material-ui/core";
-import { Visibility, VisibilityOff } from "@material-ui/icons";
+import {
+  Visibility,
+  VisibilityOff,
+  VisibilityOffOutlined,
+  VisibilityOutlined,
+} from "@material-ui/icons";
 import {
   addLocalToCart,
   postLogin,
@@ -120,9 +126,11 @@ class Login extends React.Component {
           style={{ display: "flex", justifyContent: "center" }}
         >
           <Paper
-            elevation={3}
+            elevation={this.props.width === "xs" ? 0 : 3}
+            variant={this.props.width === "xs" ? "outlined" : "elevation"}
             style={{
               padding: "20px 10px 30px 10px",
+              // backgroundColor: " #f2f2f2",
             }}
           >
             <Box
@@ -173,9 +181,9 @@ class Login extends React.Component {
                           edge="end"
                         >
                           {this.state.showPassword ? (
-                            <Visibility />
+                            <VisibilityOutlined />
                           ) : (
-                            <VisibilityOff />
+                            <VisibilityOffOutlined />
                           )}
                         </IconButton>
                       </InputAdornment>
@@ -280,4 +288,4 @@ const mapDispatchToProps = (dispatch) => {
     setCart: () => dispatch(action.setCart()),
   };
 };
-export default connect(null, mapDispatchToProps)(Login);
+export default connect(null, mapDispatchToProps)(withWidth()(Login));

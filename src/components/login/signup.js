@@ -11,8 +11,14 @@ import {
   Typography,
   Box,
   FormHelperText,
+  withWidth,
 } from "@material-ui/core";
-import { Visibility, VisibilityOff } from "@material-ui/icons";
+import {
+  Visibility,
+  VisibilityOff,
+  VisibilityOffOutlined,
+  VisibilityOutlined,
+} from "@material-ui/icons";
 import MaterialUiPhoneNumber from "material-ui-phone-number";
 import React, { useState } from "react";
 import GoogleButton from "react-google-button";
@@ -151,9 +157,11 @@ const SignUp = (props) => {
         style={{ display: "flex", justifyContent: "center" }}
       >
         <Paper
-          elevation={3}
+          elevation={props.width === "xs" ? 0 : 3}
+          variant={props.width === "xs" ? "outlined" : "elevation"}
           style={{
             padding: "10px 10px 30px 10px",
+            // backgroundColor: " #f2f2f2",
           }}
         >
           <Box
@@ -253,7 +261,11 @@ const SignUp = (props) => {
                         onClick={handleClickShowPassword}
                         edge="end"
                       >
-                        {showPassword ? <Visibility /> : <VisibilityOff />}
+                        {showPassword ? (
+                          <VisibilityOutlined />
+                        ) : (
+                          <VisibilityOffOutlined />
+                        )}
                       </IconButton>
                     </InputAdornment>
                   }
@@ -289,9 +301,9 @@ const SignUp = (props) => {
                         edge="end"
                       >
                         {showConfirmPassword ? (
-                          <Visibility />
+                          <VisibilityOutlined />
                         ) : (
-                          <VisibilityOff />
+                          <VisibilityOffOutlined />
                         )}
                       </IconButton>
                     </InputAdornment>
@@ -389,4 +401,4 @@ const SignUp = (props) => {
   );
 };
 
-export default SignUp;
+export default withWidth()(SignUp);

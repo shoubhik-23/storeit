@@ -88,7 +88,7 @@ const Product = (props) => {
             <Box style={{ height: 200, width: 100 }}>
               <img
                 style={{ height: "100%", width: "100%" }}
-                src={`${API_POINT}/${data.image}`}
+                src={data.image}
                 alt="productImage"
               ></img>
             </Box>
