@@ -1,0 +1,31 @@
+.container {
+  /* background-color: white; */
+  margin-top: 70px;
+}
+.boxContainer {
+  width: 60%;
+  height: 100%;
+}
+.alignCenter {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.brand{
+  text-align: center;
+  font-weight: 500;
+  white-space: nowrap;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.buttonContainer{
+  display:flex;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+}
+.price{
+  color: red;
+  text-align: center;
+}
