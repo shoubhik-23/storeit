@@ -13,7 +13,6 @@ import {
   Paper,
   TextField,
 } from "@mui/material";
-import SignUpComponent from "./SignUpComponent";
 import {
   collection,
   doc,
@@ -55,7 +54,7 @@ const ProfileComponent = () => {
     localStorage.removeItem("userid");
 
     dispatch(actions.logoutUser());
-    history.push("?");
+    history.push("/");
   };
   // return (
   //   <div style={{ marginTop: 100 }}>

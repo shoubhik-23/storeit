@@ -118,6 +118,7 @@ function* signUpWorker(action: any): any {
     yield call(signUpWithEmail, action);
 
     yield put(actions.loginSuccess());
+    yield action?.payload?.history.push("/");
   } catch (error: any) {
     console.log(error.message);
   }

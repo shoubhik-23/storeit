@@ -18,7 +18,9 @@ import RegisterComponent from "./containers/login/RegisterComponent";
 
 const App = () => {
   const dispatch = useDispatch();
-  const store = useSelector((stor: any) => stor);
+  const { home, profile }: any = useSelector((store: any) => store);
+  const { login } = profile;
+
   useEffect(() => {
     settingApp();
   }, []);
@@ -26,6 +28,7 @@ const App = () => {
     dispatch(actions.getAllProducts());
     dispatch(actions.retrievingAppState());
   };
+  console.log(login);
   return (
     <LayoutComponent>
       <Switch>
@@ -50,12 +53,16 @@ const App = () => {
         <Route path={"/search"} exact>
           <SearchComponent />
         </Route>
-        <Route path={"/login"} exact>
-          <LoginComponent />
-        </Route>
-        <Route path={"/register"} exact>
-          <RegisterComponent />
-        </Route>
+        {!login && (
+          <Route path={"/login"} exact>
+            <LoginComponent />
+          </Route>
+        )}
+        {!login && (
+          <Route path={"/register"} exact>
+            <RegisterComponent />
+          </Route>
+        )}
       </Switch>
     </LayoutComponent>
   );

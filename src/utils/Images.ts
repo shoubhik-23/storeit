@@ -21,4 +21,5 @@ export const Images = {
   homeDecor3Icon: require("../assets/images/homeDecor3.jpg"),
   homeDecor4Icon: require("../assets/images/homeDecor4.jpg"),
   cartIcon: require("../assets/images/trolley.png"),
+  logo: require("../assets/images/logo.png"),
 };

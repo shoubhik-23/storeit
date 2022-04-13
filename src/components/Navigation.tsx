@@ -12,19 +12,25 @@ import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import { Link, useHistory } from "react-router-dom";
-import { Drawer, TextField } from "@mui/material";
+import { Drawer, InputAdornment, TextField } from "@mui/material";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as actions from "../containers/home/actions";
+import AccountBoxIcon from "@mui/icons-material/AccountBox";
+import { Bookmark, ShoppingCart, Search } from "@mui/icons-material";
+import InputBase from "@mui/material/InputBase";
 
-const pages = ["Products", "Pricing", "Blog"];
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
+import css from "./style.module.css";
+import * as authActions from "../containers/login/actions";
+import { Images } from "../utils/Images";
 
 const NavigationComponent = () => {
   const history = useHistory();
   const store: any = useSelector((state: any) => state);
+
   const dispatch = useDispatch();
-  const { home } = store;
+  const { home, profile } = store;
+  const { login } = profile;
   const { products } = home;
   const onInputChangeHandler = (e: any) => {
     let temp: any[] = [];
@@ -60,19 +66,27 @@ const NavigationComponent = () => {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+  const userMenuHandler = (type?: string) => {
+    if (type == "profile") {
+      history.push("/profile");
+    } else if (type == "orders") {
+      history.push("/orders");
+    } else if (type == "login") {
+      history.push("/login");
+    } else if (type == "logout") {
+      localStorage.removeItem("token");
+      localStorage.removeItem("userid");
+
+      dispatch(authActions.logoutUser());
+      history.push("/");
+    }
+    handleCloseUserMenu();
+  };
 
   return (
     <AppBar position="static" style={{ position: "fixed", top: 0, zIndex: 2 }}>
       <Toolbar disableGutters>
-        <Box
-          sx={{ mr: 2, display: { xs: "none", md: "flex" } }}
-          onClick={() => history.push("/")}
-        >
-          <Typography variant="h6" noWrap component="div">
-            LOGOss
-          </Typography>
-        </Box>
-        <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
+        <Box sx={{ display: { xs: "flex", sm: "none" } }}>
           <IconButton
             size="large"
             aria-label="account of current user"
@@ -88,32 +102,46 @@ const NavigationComponent = () => {
           </Drawer>
         </Box>
         <Box
-          sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}
+          sx={{
+            width: { xs: 150, sm: 200 },
+            height: { xs: 30, sm: 40 },
+            paddingLeft: { sm: "10px" },
+          }}
           onClick={() => history.push("/")}
         >
-          <Typography variant="h6" noWrap component="div">
-            LOGO
-          </Typography>
+          <img className={css.logoImage} src={Images.logo} alt="logo"></img>
         </Box>
-        <Box style={{ flex: 1 }}>
-          <TextField
-            variant="outlined"
-            size="small"
+        <Box sx={{ display: { xs: "none", sm: "flex" }, flex: 1 }}>
+          <InputBase
             fullWidth
+            placeholder="Search…"
+            className={css.inputBase}
+            startAdornment={
+              <InputAdornment position="start">
+                <Search style={{ color: "white" }} />
+              </InputAdornment>
+            }
             onChange={onInputChangeHandler}
+            inputProps={{ "aria-label": "search" }}
           />
         </Box>
-        <Box>
-          <Link to="/cart">Cart</Link>
+        <Box sx={{ display: { xs: "flex", sm: "none" }, flex: 1 }}></Box>
+        <Box sx={{ display: { xs: "flex", sm: "none" } }}>
+          <Search className={css.searchLogo} />
         </Box>
         <Box>
+          <ShoppingCart
+            className={css.cartLogo}
+            onClick={() => history.push("/cart")}
+          ></ShoppingCart>
+        </Box>
+        <Box sx={{ display: { xs: "none", sm: "block" } }}>
           <Tooltip title="Open settings">
-            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-              <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, mr: "20px" }}>
+              <Avatar alt="Remy Sharp" />
             </IconButton>
           </Tooltip>
           <Menu
-            sx={{ mt: "45px" }}
             id="menu-appbar"
             anchorEl={anchorElUser}
             anchorOrigin={{
@@ -128,11 +156,42 @@ const NavigationComponent = () => {
             open={Boolean(anchorElUser)}
             onClose={handleCloseUserMenu}
           >
-            {settings.map((setting) => (
-              <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                <Typography textAlign="center">{setting}</Typography>
+            <MenuItem onClick={() => userMenuHandler("profile")}>
+              <AccountBoxIcon style={{ color: "#999966" }}></AccountBoxIcon>
+              <p className={css.userMenuText}> My Account </p>
+            </MenuItem>
+
+            <MenuItem onClick={() => userMenuHandler("orders")}>
+              <Bookmark style={{ color: "#999966" }} />
+              <p className={css.userMenuText}> My Orders </p>
+            </MenuItem>
+            {login ? (
+              <MenuItem
+                onClick={() => userMenuHandler("logout")}
+                className={css.justifyContent}
+              >
+                <Button
+                  className={css.loginButton}
+                  size="small"
+                  variant="contained"
+                >
+                  Logout
+                </Button>
               </MenuItem>
-            ))}
+            ) : (
+              <MenuItem
+                onClick={() => userMenuHandler("login")}
+                className={css.justifyContent}
+              >
+                <Button
+                  className={css.loginButton}
+                  size="small"
+                  variant="contained"
+                >
+                  Login
+                </Button>
+              </MenuItem>
+            )}
           </Menu>
         </Box>
       </Toolbar>

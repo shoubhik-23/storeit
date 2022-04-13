@@ -1,6 +1,6 @@
 import { Constants } from "../../constant";
 
-export const signInUser = (email?: any, password?: any) => {
+export const signUpUser = (email?: any, password?: any, history?: any) => {
   return {
     type: Constants.USER_SIGN_UP,
     payload: {
@@ -8,6 +8,7 @@ export const signInUser = (email?: any, password?: any) => {
         email,
         password,
       },
+      history,
     },
   };
 };

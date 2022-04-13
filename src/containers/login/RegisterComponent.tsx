@@ -15,33 +15,76 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { auth, firebaseDB } from "../../firebase/firebase_Config";
 import * as actions from "../login/actions";
+import MaterialUiPhoneNumber from "material-ui-phone-number";
+
 import css from "./style.module.css";
+import { useHistory } from "react-router-dom";
 
 const RegisterComponent = () => {
   const dispatch = useDispatch();
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [error, setError] = useState<any>({
-    email: false,
-    password: false,
-    phone: false,
-    firstName: true,
-    lastName: true,
+  const history = useHistory();
+  const [signUpData, setSignUpData] = useState({
+    email: "",
+    password: "",
+    confirmPassword: "",
+    phone: "",
+    name: {
+      first: "",
+      last: "",
+    },
+    address: undefined,
   });
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [error, setError] = useState({
+    email: false,
+    phone: false,
+    password: false,
+    confirm: false,
+  });
+  const handleClickShowConfirmPassword = () => {
+    setShowConfirmPassword(!showConfirmPassword);
+  };
 
   const onEmailChangeHandler = (e: any) => {
-    setEmail(e.target.value);
+    let value = e.target.value;
+
+    setSignUpData({ ...signUpData, email: value });
+    if (value) {
+      if (
+        /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/.test(
+          value
+        )
+      ) {
+        setError({ ...error, email: false });
+      } else setError({ ...error, email: true });
+    } else setError({ ...error, email: false });
   };
-  const onPassChangeHandler = (e: any) => {
-    setPassword(e.target.value);
+  const handlePasswordChange = (e: any) => {
+    let value = e.target.value;
+
+    setSignUpData({ ...signUpData, password: e.target.value });
+    if (value) {
+      value.length < 6
+        ? setError({ ...error, password: true })
+        : setError({ ...error, password: false });
+    } else setError({ ...error, password: false });
+  };
+  const handleConfirmPasswordChange = (e: any) => {
+    let value = e.target.value;
+
+    setSignUpData({ ...signUpData, confirmPassword: e.target.value });
+
+    if (value) {
+      value !== signUpData.password
+        ? setError({ ...error, confirm: true })
+        : setError({ ...error, confirm: false });
+    } else setError({ ...error, confirm: false });
   };
   const signUpWithEmail = () => {
-    dispatch(actions.signInUser(email, password));
+    dispatch(
+      actions.signUpUser(signUpData.email, signUpData.password, history)
+    );
   };
   const onSubmitHandler = () => {
     signUpWithEmail();
@@ -64,9 +107,13 @@ const RegisterComponent = () => {
                 label="First Name"
                 fullWidth
                 size="small"
-                error={error.email}
-                value={email}
-                onChange={onEmailChangeHandler}
+                value={signUpData.name.first}
+                onChange={(e) =>
+                  setSignUpData({
+                    ...signUpData,
+                    name: { ...signUpData.name, first: e.target.value },
+                  })
+                }
               ></TextField>
             </Grid>
             <Grid item xs={12} md={6}>
@@ -76,9 +123,13 @@ const RegisterComponent = () => {
                 label="Last Name"
                 fullWidth
                 size="small"
-                error={error.email}
-                value={email}
-                onChange={onEmailChangeHandler}
+                onChange={(e) =>
+                  setSignUpData({
+                    ...signUpData,
+                    name: { ...signUpData.name, last: e.target.value },
+                  })
+                }
+                value={signUpData.name.last}
               ></TextField>
             </Grid>
           </Grid>
@@ -91,28 +142,36 @@ const RegisterComponent = () => {
               fullWidth
               size="small"
               error={error.email}
-              value={email}
+              value={signUpData.email}
               onChange={onEmailChangeHandler}
+              helperText={error.email ? "Please enter a valid email" : null}
             ></TextField>
           </Grid>
           <Grid item xs={12}>
-            <TextField
-              required
-              className={css.textFields}
-              label="Phone"
-              fullWidth
+            <MaterialUiPhoneNumber
               size="small"
-              error={error.email}
-              value={email}
-              onChange={onEmailChangeHandler}
-            ></TextField>
+              defaultCountry={"in"}
+              label="Phone "
+              required
+              fullWidth
+              className={css.textFields}
+              variant="outlined"
+              onChange={(value: any) =>
+                setSignUpData({
+                  ...signUpData,
+                  phone: value,
+                })
+              }
+              value={signUpData.phone}
+            ></MaterialUiPhoneNumber>
           </Grid>
           <Grid item xs={12}>
             <TextField
               id="outlined-adornment-password"
               type={showPassword ? "text" : "password"}
-              value={password}
-              onChange={onPassChangeHandler}
+              value={signUpData.password}
+              onChange={handlePasswordChange}
+              error={error.password}
               required
               label="password"
               className={css.textFields}
@@ -136,10 +195,10 @@ const RegisterComponent = () => {
           </Grid>
           <Grid item xs={12}>
             <TextField
-              id="outlined-adornment-password"
               type={showPassword ? "text" : "password"}
-              value={password}
-              onChange={onPassChangeHandler}
+              value={signUpData.confirmPassword}
+              error={error.confirm}
+              onChange={handleConfirmPasswordChange}
               required
               label="password"
               size="small"
@@ -149,7 +208,7 @@ const RegisterComponent = () => {
                   <InputAdornment position="end">
                     <IconButton
                       aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
+                      onClick={handleClickShowConfirmPassword}
                       // onMouseDown={handleMouseDownPassword}
                       edge="end"
                     >
@@ -162,7 +221,16 @@ const RegisterComponent = () => {
           </Grid>
           <Grid item xs={12}>
             <Box className={css.loginButtonContainer}>
-              {!email || !password || error.email || error.password ? (
+              {!signUpData.name.first ||
+              !signUpData.name.last ||
+              !signUpData.phone ||
+              !signUpData.password ||
+              !signUpData.confirmPassword ||
+              !signUpData.email ||
+              error.password ||
+              error.confirm ||
+              error.phone ||
+              error.email ? (
                 <Button
                   onClick={onSubmitHandler}
                   variant="contained"
