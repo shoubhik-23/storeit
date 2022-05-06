@@ -4,6 +4,7 @@ const initialState = {
   login: false,
   userData: null,
   userid: null,
+  cart: [],
 };
 
 export const loginReducer = (state = initialState, action: any) => {
@@ -26,6 +27,11 @@ export const loginReducer = (state = initialState, action: any) => {
         ...state,
         login: false,
         userid: null,
+      };
+    case Constants.FETCH_CART:
+      return {
+        ...state,
+        cart: action.payload?.data,
       };
     default:
       return { ...state };

@@ -15,6 +15,8 @@ import ProfileComponent from "./containers/profile";
 import SearchComponent from "./containers/search";
 import LoginComponent from "./containers/login/LoginComponent";
 import RegisterComponent from "./containers/login/RegisterComponent";
+import OrderComponent from "./containers/orders";
+import TranslateComp from "./test/TranslateComp";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -53,6 +55,9 @@ const App = () => {
         <Route path={"/search"} exact>
           <SearchComponent />
         </Route>
+
+        <Route path={"/orders"} component={OrderComponent}></Route>
+
         {!login && (
           <Route path={"/login"} exact>
             <LoginComponent />
@@ -63,6 +68,9 @@ const App = () => {
             <RegisterComponent />
           </Route>
         )}
+        <Route path={"/test"}>
+          <TranslateComp />
+        </Route>
       </Switch>
     </LayoutComponent>
   );

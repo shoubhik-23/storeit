@@ -5,8 +5,10 @@ import {
   getDocs,
   updateDoc,
   doc,
+  setDoc,
 } from "firebase/firestore";
-import { Container, Grid, Paper, Divider } from "@mui/material";
+import { Container, Grid, Paper, Divider, Switch, Input } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 import Button from "@mui/material/Button";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
@@ -15,19 +17,31 @@ import { firebaseDB } from "../../firebase/firebase_Config";
 import ImageCard from "../../components/ImageCard";
 import Colors from "../../utils/colors";
 import { useHistory } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Images } from "../../utils/Images";
 import { Box } from "@mui/system";
 import { CartLoader } from "./CartLoader";
+import * as actions from "../login/actions";
+import moment from "moment";
+import CheckoutDialog from "./CheckoutDialog";
+import "./style.css";
+import Modal from "./Modal";
 const CartComponent = () => {
   const history = useHistory();
   const store: any = useSelector((state) => state);
+  const [userData, setUserData] = useState<any>({});
   const [loading, setLoading] = useState(true);
+  const [dialogueopen, setDialogueopen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [checkoutError, setCheckoutError] = useState(false);
+  const dispatch = useDispatch();
   const { login, userid }: any = store.profile;
+  console.log(store.profile);
   const [cartData, setCartData] = useState<any[]>([]);
   useEffect(() => {
     login ? getRemoteCartData() : getLocalCartData();
   }, [login]);
+
   const getRemoteCartData = async () => {
     const firebaseDataBaseUserRef = collection(firebaseDB, "users");
     const firebaseDataBaseProductRef = collection(firebaseDB, "products");
@@ -38,6 +52,9 @@ const CartComponent = () => {
     const userQuerySnapshot = await getDocs(q1);
     userQuerySnapshot.forEach((doc: any) => {
       loggedUser = doc.data();
+      setUserData({
+        ...doc.data(),
+      });
     });
     let cart: any[] = loggedUser?.cart;
     for (let i in cart) {
@@ -53,6 +70,8 @@ const CartComponent = () => {
       cart[i] = { ...cart[i], ...docs };
     }
     setCartData(cart);
+    dispatch(actions.fetchCart(cart));
+
     setLoading(false);
   };
   const getLocalCartData = async () => {
@@ -69,11 +88,11 @@ const CartComponent = () => {
       localCart[i] = { ...localCart[i], ...docs };
     }
     setCartData(localCart);
+    dispatch(actions.fetchCart(localCart));
     setLoading(false);
   };
   const updateRemoteCart = async (uid: any, updatedCart: any[]) => {
     const cart: any[] = [...updatedCart];
-    const firebaseDataBaseRef = collection(firebaseDB, "users");
 
     const washingtonRef = doc(firebaseDB, "users", uid);
 
@@ -81,7 +100,9 @@ const CartComponent = () => {
       cart: cart,
     });
   };
-  const deleteItemFromCart = async (item: any) => {
+  const deleteItemFromCart = async (item: any, e: any) => {
+    e.stopPropagation();
+
     if (login) {
       const index = cartData.findIndex((el) => el.id === item.id);
 
@@ -91,6 +112,7 @@ const CartComponent = () => {
       await updateRemoteCart(userid, temp);
 
       setCartData(temp);
+      dispatch(actions.fetchCart(temp));
     } else {
       const cart: any[] = JSON.parse(localStorage.getItem("cart") as any);
       const index = cart.findIndex((el) => el.id === item.id);
@@ -99,6 +121,7 @@ const CartComponent = () => {
       temp.splice(index, 1);
 
       setCartData(temp);
+      dispatch(actions.fetchCart(temp));
 
       localStorage.setItem("cart", JSON.stringify(temp));
     }
@@ -139,7 +162,9 @@ const CartComponent = () => {
     }
     return total;
   }, []);
-  const addToCart = async (item: any) => {
+  const addToCart = async (item: any, e?: any) => {
+    e.stopPropagation();
+
     if (login) {
       const cart: any[] = [...cartData];
       const index = cart.findIndex((el) => el.id === item.id);
@@ -151,6 +176,7 @@ const CartComponent = () => {
 
       await updateRemoteCart(userid, cart);
       setCartData(cart);
+      dispatch(actions.fetchCart(cart));
     } else {
       const cart: any[] = JSON.parse(localStorage.getItem("cart") as any);
       const index = cart.findIndex((el) => el.id === item.id);
@@ -165,9 +191,41 @@ const CartComponent = () => {
         return { ...el, count: cart[i].count };
       });
       setCartData(temp);
+      dispatch(actions.fetchCart(temp));
     }
   };
-  const decreaseFromCart = async (item: any) => {
+  const placeOrderHandler = async () => {
+    const orderRef = collection(firebaseDB, "orders");
+    let order: any;
+    let temp: any[] = cartData.map((el: any, i: number) => {
+      return { count: el.count, id: el.id };
+    });
+    order = {
+      userid,
+      items: temp,
+      date: moment(new Date()).format(),
+    };
+    try {
+      const docs = await doc(orderRef);
+      const docRef = await setDoc(docs, {
+        ...order,
+        id: docs.id,
+      });
+      setCartData([]);
+      dispatch(actions.fetchCart([]));
+      updateRemoteCart(userid, []);
+
+      setCheckoutError(true);
+      setModalOpen(true);
+    } catch (error) {
+      console.log(error);
+    }
+    console.log(order);
+    setDialogueopen(false);
+  };
+  const decreaseFromCart = async (item: any, e?: any) => {
+    console.log(444);
+    e.stopPropagation();
     if (login) {
       const cart: any[] = [...cartData];
       const index = cart.findIndex((el) => el.id === item.id);
@@ -179,9 +237,9 @@ const CartComponent = () => {
           cart.splice(index, 1);
         }
       }
-
       await updateRemoteCart(userid, cart);
       setCartData(cart);
+      dispatch(actions.fetchCart(cart));
     } else {
       const cart: any[] = JSON.parse(localStorage.getItem("cart") as any);
       const index = cart.findIndex((el) => el.id === item.id);
@@ -205,13 +263,14 @@ const CartComponent = () => {
       localStorage.setItem("cart", JSON.stringify(cart));
 
       setCartData(temp);
+      dispatch(actions.fetchCart(temp));
     }
   };
   console.log(111, cartData);
   const emptyCartComponent = () => {
     return (
       <Box className={css.emptyCartContainer}>
-        <img src={Images.cartIcon} height={100}></img>
+        <img src={Images.cartIcon} height={100} alt={"carticon "}></img>
 
         <p style={{ margin: "30px 0" }}>Your shopping cart is empty !</p>
         <Button
@@ -224,6 +283,21 @@ const CartComponent = () => {
       </Box>
     );
   };
+  const closeCheckoutDialog = () => {
+    setDialogueopen(false);
+  };
+  const onCloseModalHandler = () => {
+    setModalOpen(false);
+    history.push("/orders");
+  };
+  const proceedOrderHandler = () => {
+    if (login) {
+      setDialogueopen(true);
+    } else {
+      history.push("/login", { from: "cart" });
+    }
+  };
+
   return (
     <Container className={css.mainContainer} maxWidth="lg">
       {loading ? (
@@ -243,9 +317,9 @@ const CartComponent = () => {
                     <div
                       className={css.itemContainer}
                       key={i}
-                      // onClick={() =>
-                      //   history.push("/product-detail", { data: el })
-                      // }
+                      onClick={() =>
+                        history.push("/product-detail", { data: el })
+                      }
                     >
                       <div className={css.itemLeft}>
                         <ImageCard height={100} imgSrc={el.imageUrl} />
@@ -260,18 +334,18 @@ const CartComponent = () => {
                             variant="outlined"
                             aria-label="outlined primary button group"
                           >
-                            <Button onClick={() => decreaseFromCart(el)}>
+                            <Button onClick={(e) => decreaseFromCart(el, e)}>
                               -
                             </Button>
                             <Button style={{ backgroundColor: "white" }}>
                               {el.count}
                             </Button>
-                            <Button onClick={() => addToCart(el)}> +</Button>
+                            <Button onClick={(e) => addToCart(el, e)}>+</Button>
                           </ButtonGroup>
                           <Button
                             size="small"
                             variant="outlined"
-                            onClick={() => deleteItemFromCart(el)}
+                            onClick={(e) => deleteItemFromCart(el, e)}
                           >
                             Remove
                           </Button>
@@ -303,21 +377,22 @@ const CartComponent = () => {
               </div>
               <div className={css.priceItemContainer}>
                 <p>Coupon</p>
-                <p style={{ color: "green" }}>- 555</p>
+                <p style={{ color: "green" }}>- &#8377; 555</p>
               </div>
               <div className={css.totalAmountContainer}>
                 <p>Total Amount</p>
                 <p>&#8377; {priceCalculation(cartData, "amount")} </p>
               </div>
               <p className={css.saveLine}>
-                You will save {priceCalculation(cartData, "discount") + 555} on
-                this order
+                You will save &#8377;{" "}
+                {priceCalculation(cartData, "discount") + 555} on this order
               </p>
               <div className={css.placeOrderContainer}>
                 <Button
                   style={{ backgroundColor: Colors.orange, width: "70%" }}
                   variant="contained"
                   size="large"
+                  onClick={proceedOrderHandler}
                 >
                   PlACE ORDER
                 </Button>
@@ -328,6 +403,15 @@ const CartComponent = () => {
       ) : (
         emptyCartComponent()
       )}
+      <CheckoutDialog
+        cart={cartData}
+        open={dialogueopen}
+        user={userData}
+        handleClose={closeCheckoutDialog}
+        postOrderHandler={placeOrderHandler}
+        amount={priceCalculation(cartData, "amount")}
+      />
+      <Modal open={modalOpen} handleClose={onCloseModalHandler} />
     </Container>
   );
 };

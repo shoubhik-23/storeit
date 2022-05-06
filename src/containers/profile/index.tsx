@@ -1,28 +1,8 @@
 import React, { useEffect, useState } from "react";
-import {
-  createUserWithEmailAndPassword,
-  getAuth,
-  signInWithEmailAndPassword,
-} from "firebase/auth";
-import {
-  Box,
-  Button,
-  Container,
-  Grid,
-  IconButton,
-  Paper,
-  TextField,
-} from "@mui/material";
-import {
-  collection,
-  doc,
-  getDocs,
-  query,
-  setDoc,
-  where,
-} from "firebase/firestore";
+
+import { Box, Button, Grid, IconButton, Paper, TextField } from "@mui/material";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { firebaseDB } from "../../firebase/firebase_Config";
-import LoginComponent from "../login/LoginComponent";
 import css from "./style.module.css";
 import { AccountBox, Edit } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
@@ -37,6 +17,7 @@ const ProfileComponent = () => {
   const [data, setData] = useState<any>({});
   useEffect(() => {
     fetchUserDetails();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userid]);
   const fetchUserDetails = async () => {
     const userDbRef = collection(firebaseDB, "users");
@@ -212,6 +193,16 @@ const ProfileComponent = () => {
                         variant="outlined"
                         label="Full Address"
                         value={data.address?.fullAddress || "NA"}
+                      ></TextField>
+                    </Grid>
+                    <Grid item xs={12} className={css.addressFieldContainer}>
+                      <TextField
+                        size="small"
+                        fullWidth
+                        multiline
+                        label="Pin Code"
+                        variant="outlined"
+                        value={data.address?.pin || "NA"}
                       ></TextField>
                     </Grid>
                     <Grid item xs={12} className={css.logoutContainer}>

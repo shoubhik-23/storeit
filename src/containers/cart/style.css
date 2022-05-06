@@ -1,0 +1,9 @@
+.MuiInput-underline {
+  border-bottom: 1px solid black;
+}
+.MuiInput-underline:hover {
+  border-bottom: 1px solid black;
+}
+.MuiInput-underline:focus {
+  border-bottom: 1px solid black;
+}

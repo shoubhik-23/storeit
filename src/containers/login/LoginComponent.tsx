@@ -12,23 +12,22 @@ import {
   TextField,
 } from "@mui/material";
 import { Box } from "@mui/system";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { collection, doc, setDoc } from "firebase/firestore";
+
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { auth, firebaseDB } from "../../firebase/firebase_Config";
 import * as actions from "./actions";
 import css from "./style.module.css";
-import clsx from "clsx";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 
 const LoginComponent = () => {
   const dispatch = useDispatch();
+  const location = useLocation();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<any>({ email: false, password: false });
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const history = useHistory();
+  console.log(location, history);
   const onEmailChangeHandler = (e: any) => {
     let value = e.target.value;
     setEmail(e.target.value);
@@ -47,7 +46,7 @@ const LoginComponent = () => {
     setPassword(e.target.value);
   };
   const loginWithEmail = () => {
-    dispatch(actions.loginUser(email, password));
+    dispatch(actions.loginUser(email, password, history));
   };
   const onSubmitHandler = () => {
     loginWithEmail();

@@ -9,11 +9,8 @@ import {
   Paper,
   TextField,
 } from "@mui/material";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { collection, doc, setDoc } from "firebase/firestore";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { auth, firebaseDB } from "../../firebase/firebase_Config";
 import * as actions from "../login/actions";
 import MaterialUiPhoneNumber from "material-ui-phone-number";
 

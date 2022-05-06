@@ -1,4 +1,4 @@
-import { Box, Button, ButtonGroup, Grid, Typography } from "@mui/material";
+import { Box, Button, ButtonGroup, Grid, Paper } from "@mui/material";
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
@@ -18,7 +18,7 @@ const ProductListComponent = () => {
     console.log(item.id);
     const cart: any[] = JSON.parse(localStorage.getItem("cart") as any);
     const index = cart.findIndex((el) => el.id === item.id);
-    if (index == -1) {
+    if (index === -1) {
       cart.push({ id: item.id, count: 1 });
     } else {
       cart[index] = { ...cart[index], count: cart[index].count + 1 };
@@ -82,33 +82,36 @@ const ProductListComponent = () => {
           item
           xs={6}
           className={csclass.alignCenter}
-          style={{ padding: "10px 0" }}
+          style={{ padding: "10px 10px" }}
           sm={4}
           md={3}
         >
-          <Box className={[csclass.boxContainer].join(" ")}>
+          <Paper className={csclass.paper} square elevation={4}>
             <Box
-              className={csclass.alignCenter}
-              style={{
-                height: 150,
-              }}
+              className={[csclass.boxContainer].join(" ")}
               onClick={() => history.push("/product-detail", { data: el })}
             >
-              <ImageCard
-                width={"90%"}
-                imgSrc={el.imageUrl}
-                height={"100%"}
-                // maxHeight={300}
-              />
-            </Box>
+              <Box
+                className={csclass.imageBox}
+                style={{
+                  height: 150,
+                }}
+              >
+                <ImageCard
+                  width={"90%"}
+                  imgSrc={el.imageUrl}
+                  height={"100%"}
+                  // maxHeight={300}
+                />
+              </Box>
 
-            <p className={csclass.brand}>{el.brand}</p>
-            <Typography className={csclass.price}>
-              {parseFloat(el.price).toFixed(2)}
-            </Typography>
-            <Typography noWrap>{el.name}</Typography>
-            {renderCartButton(el)}
-          </Box>
+              <p className={csclass.brand}>{el.brand}</p>
+              <p className={csclass.price}>
+                &#8377; {parseFloat(el.price).toFixed(2)}
+              </p>
+              <p className={csclass.name}>{el.name}</p>
+            </Box>
+          </Paper>
         </Grid>
       ))}
     </Grid>

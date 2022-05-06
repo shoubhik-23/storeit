@@ -22,4 +22,6 @@ export const Images = {
   homeDecor4Icon: require("../assets/images/homeDecor4.jpg"),
   cartIcon: require("../assets/images/trolley.png"),
   logo: require("../assets/images/logo.png"),
+  noResults: require("../assets/images/no-results.png"),
+  congrats: require("../assets/images/congrats.png"),
 };

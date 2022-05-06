@@ -178,15 +178,11 @@ const HomeComponent = () => {
           md={3}
           className={csclass.cardWidgetContainer}
         >
-          {/* <CardWidget
-            data={[
-              { title: "Laptop", imgSrc: Images.laptopWidgetIcon },
-              { title: "Laptop", imgSrc: Images.monitorWidgetIcon },
-              { title: "Laptop", imgSrc: Images.watchWidgetIcon },
-              { title: "Laptop", imgSrc: Images.phoneWidgetIcon },
-            ]}
+          <CardWidget
+            heading="Decorate your Garden!"
+            data={[{ title: "Garden", imgSrc: Images.gardenIcon }]}
             width={screenWidth == "xs" ? "100%" : "80%"}
-          /> */}
+          />
         </Grid>
         <Grid
           item

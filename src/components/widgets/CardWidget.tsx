@@ -1,6 +1,6 @@
-import { Typography, Box, Paper, Grid, Button } from "@mui/material";
+import { Box, Paper, Grid } from "@mui/material";
 import React, { useState } from "react";
-import { NavLink, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import ImageCard from "../ImageCard";
 import css from "./style.module.css";
 
@@ -17,7 +17,13 @@ const CardWidget = (props: props) => {
   const history = useHistory();
   return (
     <Paper
-      style={{ width: props.width, height: props.height, padding: "1rem" }}
+      elevation={4}
+      style={{
+        width: props.width,
+        height: props.height,
+        padding: "1rem",
+        borderRadius: 0,
+      }}
     >
       <Box
         style={{
@@ -37,15 +43,13 @@ const CardWidget = (props: props) => {
           padding: "15px",
         }}
       > */}
-        <Typography className={css.cardWidgetHeading}>
-          {props.heading}
-        </Typography>
+        <p className={css.cardWidgetHeading}>{props.heading}</p>
         <Grid container>
           {items.map((el, i) => (
             <Grid
               item
               key={i}
-              xs={items.length == 1 ? 12 : 6}
+              xs={items.length === 1 ? 12 : 6}
               style={{
                 display: "flex",
                 justifyContent: "center",
@@ -80,15 +84,9 @@ const CardWidget = (props: props) => {
           ))}
         </Grid>
 
-        <Button
-          style={{
-            cursor: "pointer",
-            textTransform: "none",
-          }}
-          onClick={() => history.push("/products")}
-        >
+        <p className={css.seeAllText} onClick={() => history.push("/products")}>
           See All
-        </Button>
+        </p>
         {/* </Paper> */}
       </Box>
     </Paper>

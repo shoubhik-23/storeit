@@ -10,7 +10,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import ImageCard from "../../components/ImageCard";
-import Colors from "../../utils/colors";
+import { Images } from "../../utils/Images";
 import csclass from "./style.module.css";
 
 const SearchComponent = () => {
@@ -24,9 +24,20 @@ const SearchComponent = () => {
 
   const emptySearchResult = () => {
     return (
-      <Box>
-        <p>Oops no results found!</p>
-      </Box>
+      <Grid
+        item
+        xs={12}
+        style={{
+          display: "flex",
+          justifyContent: "center",
+
+          alignItems: "center",
+        }}
+      >
+        <img width={50} src={Images.noResults} alt="noresult"></img>
+
+        <p className={csclass.noResultsText}>Oops no results found!</p>
+      </Grid>
     );
   };
 
@@ -39,18 +50,14 @@ const SearchComponent = () => {
               item
               xs={6}
               className={csclass.alignCenter}
-              style={{ padding: "10px 0" }}
+              style={{ padding: "10px 10px" }}
               sm={4}
               md={3}
             >
-              <Box className={[csclass.boxContainer].join(" ")}>
-                <Paper
-                  style={{
-                    padding: "5px",
-                  }}
-                >
+              <Paper className={csclass.paper} square elevation={4}>
+                <Box className={[csclass.boxContainer].join(" ")}>
                   <Box
-                    className={csclass.alignCenter}
+                    className={csclass.imageBox}
                     style={{
                       height: 150,
                     }}
@@ -67,12 +74,12 @@ const SearchComponent = () => {
                   </Box>
 
                   <p className={csclass.brand}>{el.brand}</p>
-                  <Typography className={csclass.price}>
-                    {parseFloat(el.price).toFixed(2)}
-                  </Typography>
-                  <Typography noWrap>{el.name}</Typography>
-                </Paper>
-              </Box>
+                  <p className={csclass.price}>
+                    &#8377; {parseFloat(el.price).toFixed(2)}
+                  </p>
+                  <p className={csclass.name}>{el.name}</p>
+                </Box>
+              </Paper>
             </Grid>
           ))
         : emptySearchResult()}

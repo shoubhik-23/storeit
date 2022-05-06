@@ -9,52 +9,46 @@ p {
   padding: 10px;
 }
 .priceKey {
-    color: #565959;
-    font-weight: 400;
-    margin: 0;
-
-  }
+  color: #565959;
+  font-weight: 400;
+  margin: 0;
+}
 .priceValue {
   color: red;
   margin: 0;
   font-size: 1.3rem;
-
 }
 .mrpKey {
   color: #565959;
   font-weight: 400;
   margin: 0;
- 
 }
 .mrpValue {
-  color:grey;
+  color: grey;
   text-decoration: line-through;
   text-decoration-color: #565959;
   margin: 0;
-
 }
 .youSaveKey {
   color: #565959;
   font-weight: 400;
   margin: 0;
-
 }
 .youSaveValue {
   color: red;
   margin: 0;
-
 }
-.description{
-    font-weight: 400;
-    font-size: 1rem;
+.description {
+  font-weight: 400;
+  font-size: 1rem;
+  margin: 10px 0;
 }
-.badge{
-    background-color: green;
-    color: white;
-    padding: 2px 4px;
-    border-radius: 5px;
-    margin-left: 10px;
-    font-size: 1rem;
-    box-shadow: 2px 0px 2px grey;
-
+.badge {
+  background-color: green;
+  color: white;
+  padding: 2px 4px;
+  border-radius: 5px;
+  margin-left: 10px;
+  font-size: 1rem;
+  box-shadow: 2px 0px 2px grey;
 }

@@ -3,26 +3,33 @@ import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
 import Menu from "@mui/material/Menu";
 import MenuIcon from "@mui/icons-material/Menu";
-import Container from "@mui/material/Container";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import { Link, useHistory } from "react-router-dom";
-import { Drawer, InputAdornment, TextField } from "@mui/material";
+import { useHistory } from "react-router-dom";
+import { Badge, Drawer, Grid, InputAdornment } from "@mui/material";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as actions from "../containers/home/actions";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
-import { Bookmark, ShoppingCart, Search } from "@mui/icons-material";
+import {
+  Bookmark,
+  ShoppingCart,
+  Search,
+  AccountCircle,
+  AccountBox,
+  Home,
+} from "@mui/icons-material";
 import InputBase from "@mui/material/InputBase";
 
 import css from "./style.module.css";
 import * as authActions from "../containers/login/actions";
 import { Images } from "../utils/Images";
+import { firebaseDB } from "../firebase/firebase_Config";
+import { collection, getDocs, query, where } from "firebase/firestore";
 
 const NavigationComponent = () => {
   const history = useHistory();
@@ -30,8 +37,10 @@ const NavigationComponent = () => {
 
   const dispatch = useDispatch();
   const { home, profile } = store;
-  const { login } = profile;
+  const { login, userid, cart } = profile;
   const { products } = home;
+  const cartCount = cart?.length;
+  React.useEffect(() => {}, []);
   const onInputChangeHandler = (e: any) => {
     let temp: any[] = [];
     history.push("/search");
@@ -43,12 +52,13 @@ const NavigationComponent = () => {
           el.name?.toLowerCase().indexOf(value.toLowerCase()) !== -1
         );
       });
+    } else {
+      history.push("/");
     }
 
     dispatch(actions.updateSearchResult(temp));
   };
 
-  const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const [openDrawer, setOpenDrawer] = useState(false);
 
@@ -67,13 +77,13 @@ const NavigationComponent = () => {
     setAnchorElUser(null);
   };
   const userMenuHandler = (type?: string) => {
-    if (type == "profile") {
+    if (type === "profile") {
       history.push("/profile");
-    } else if (type == "orders") {
+    } else if (type === "orders") {
       history.push("/orders");
-    } else if (type == "login") {
+    } else if (type === "login") {
       history.push("/login");
-    } else if (type == "logout") {
+    } else if (type === "logout") {
       localStorage.removeItem("token");
       localStorage.removeItem("userid");
 
@@ -81,6 +91,30 @@ const NavigationComponent = () => {
       history.push("/");
     }
     handleCloseUserMenu();
+    handleCloseNavMenu();
+  };
+  const getCartCount = async () => {
+    if (login) {
+      console.log("starting");
+      const firebaseDataBaseUserRef = collection(firebaseDB, "users");
+
+      let loggedUser: any;
+
+      const q1 = query(firebaseDataBaseUserRef, where("id", "==", userid));
+      const userQuerySnapshot = await getDocs(q1);
+      userQuerySnapshot.forEach((doc: any) => {
+        loggedUser = doc.data();
+      });
+      let cart: any[] = loggedUser?.cart;
+      console.log("Cc", cart);
+      return cart.length;
+    } else {
+      console.log("rendereding");
+
+      const cart: any[] = JSON.parse(localStorage.getItem("cart") as any);
+
+      return cart.length;
+    }
   };
 
   return (
@@ -98,7 +132,109 @@ const NavigationComponent = () => {
             <MenuIcon />
           </IconButton>
           <Drawer open={openDrawer} onClose={handleCloseNavMenu}>
-            <div>sdfs</div>
+            <Grid
+              container
+              spacing={2}
+              style={{ maxWidth: "70vw" }}
+              role="presentation"
+              onClick={handleCloseNavMenu}
+            >
+              <Grid
+                item
+                xs={12}
+                style={{
+                  display: "flex",
+                  backgroundColor: "#99e6ff",
+
+                  justifyContent: "left",
+                  alignItems: "center",
+                }}
+              >
+                <AccountCircle style={{ fontSize: 50, color: "silver" }} />
+                <p style={{ fontSize: 25, opacity: 0.8 }}>
+                  Hello&nbsp;
+                  {localStorage.getItem("user_name")
+                    ? localStorage.getItem("user_name")
+                    : "Guest"}
+                  !
+                </p>
+              </Grid>
+
+              <Grid
+                item
+                container
+                spacing={3}
+                xs={12}
+                style={{ paddingLeft: 15 }}
+              >
+                <Grid
+                  item
+                  xs={12}
+                  onClick={() => history.push("/")}
+                  style={{
+                    display: "flex",
+                    justifyContent: "left",
+                    alignItems: "center",
+                  }}
+                >
+                  <Home style={{ color: "#999966" }}></Home>
+                  <p style={{ fontSize: 16, marginLeft: "0.5rem" }}>Home</p>
+                </Grid>
+                <Grid
+                  item
+                  xs={12}
+                  style={{ display: "flex", justifyContent: "left" }}
+                  onClick={() => history.push("/profile")}
+                >
+                  <AccountBox style={{ color: "#999966" }}></AccountBox>
+                  <p style={{ fontSize: 16, marginLeft: "0.5rem" }}>
+                    My Account
+                  </p>
+                </Grid>
+                <Grid
+                  item
+                  xs={12}
+                  style={{ display: "flex", justifyContent: "left" }}
+                  onClick={() => history.push("/orders")}
+                >
+                  <Bookmark style={{ color: "#999966" }}></Bookmark>
+                  <p style={{ fontSize: 16, marginLeft: "0.5rem" }}>
+                    My Orders
+                  </p>
+                </Grid>
+
+                {login ? (
+                  <Grid
+                    item
+                    xs={12}
+                    style={{ display: "flex", justifyContent: "center" }}
+                  >
+                    <Button
+                      className={css.loginButton}
+                      size="small"
+                      variant="contained"
+                    >
+                      Logout
+                    </Button>
+                  </Grid>
+                ) : (
+                  <Grid
+                    item
+                    xs={12}
+                    style={{ display: "flex", justifyContent: "center" }}
+                  >
+                    <Button
+                      className={css.loginButton}
+                      size="small"
+                      variant="contained"
+                      onClick={() => userMenuHandler("login")}
+                    >
+                      Login
+                    </Button>
+                  </Grid>
+                )}
+              </Grid>
+            </Grid>
           </Drawer>
         </Box>
         <Box
@@ -130,10 +266,16 @@ const NavigationComponent = () => {
           <Search className={css.searchLogo} />
         </Box>
         <Box>
-          <ShoppingCart
-            className={css.cartLogo}
-            onClick={() => history.push("/cart")}
-          ></ShoppingCart>
+          <Badge badgeContent={cartCount} color="secondary" overlap="circular">
+            <ShoppingCart
+              style={{
+                padding: 0,
+                boxSizing: "border-box",
+              }}
+              className={css.cartLogo}
+              onClick={() => history.push("/cart")}
+            ></ShoppingCart>
+          </Badge>
         </Box>
         <Box sx={{ display: { xs: "none", sm: "block" } }}>
           <Tooltip title="Open settings">

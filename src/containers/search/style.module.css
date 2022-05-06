@@ -1,15 +1,32 @@
 .container {
   /* background-color: white; */
-  margin-top: 80px;
+  margin-top: 70px;
 }
 .boxContainer {
   width: 60%;
   height: 100%;
+
+  box-sizing: border-box;
+  cursor: pointer;
 }
 .alignCenter {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+.imageBox {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.paper {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  max-width: 350px;
+  justify-content: center;
+  box-sizing: border-box;
+  padding: 5px;
 }
 .brand {
   text-align: center;
@@ -28,4 +45,15 @@
 .price {
   color: red;
   text-align: center;
+  margin: 10px 0;
+}
+.name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.noResultsText {
+  font-weight: 500;
+  font-size: 1.2rem;
+  margin-left: 3px;
 }

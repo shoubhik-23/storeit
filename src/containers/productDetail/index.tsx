@@ -1,6 +1,6 @@
 import { Grid, Box, Button, Container, Paper, Divider } from "@mui/material";
-import React from "react";
-import { useLocation } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useHistory, useLocation } from "react-router-dom";
 import ImageCard from "../../components/ImageCard";
 import Colors from "../../utils/colors";
 import { GetScreenWidth } from "../../utils/getScreenWidth";
@@ -9,14 +9,119 @@ import StarIcon from "@mui/icons-material/Star";
 
 import css from "./style.module.css";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-
-interface props {}
+import { useDispatch, useSelector } from "react-redux";
+import * as actions from "../login/actions";
+import {
+  collection,
+  doc,
+  getDocs,
+  query,
+  updateDoc,
+  where,
+} from "firebase/firestore";
+import { firebaseDB } from "../../firebase/firebase_Config";
 
 const ProductDetailsComponent = () => {
   const location = useLocation();
+  const history = useHistory();
+  const dispatch = useDispatch();
+  const store = useSelector((state: any) => {
+    return state;
+  });
+  const { home, profile } = store;
+  const { login, userid } = profile;
   const { state }: any = location;
+  const [loading, setLoading] = useState(true);
+
   const { data = {} } = state;
-  const screenWidth = GetScreenWidth();
+  const [cartData, setCartData] = useState<any[]>([]);
+  useEffect(() => {
+    login ? getRemoteCartData() : getLocalCartData();
+  }, [login]);
+  const addToCart = async (item: any) => {
+    if (login) {
+      const cart: any[] = [...cartData];
+      const index = cart.findIndex((el) => el.id === item.id);
+      if (index === -1) {
+        cart.push({ id: item.id, count: 1 });
+      } else {
+        cart[index] = { ...cart[index], count: cart[index].count + 1 };
+      }
+
+      await updateRemoteCart(userid, cart);
+      setCartData(cart);
+      dispatch(actions.fetchCart(cart));
+    } else {
+      const cart: any[] = JSON.parse(localStorage.getItem("cart") as any);
+      const index = cart.findIndex((el) => el.id === item.id);
+      if (index === -1) {
+        cart.push({ id: item.id, count: 1 });
+      } else {
+        cart[index] = { ...cart[index], count: cart[index].count + 1 };
+      }
+
+      localStorage.setItem("cart", JSON.stringify(cart));
+      let temp = cart.map((el: any, i: number, arr: any[]) => {
+        return { ...el, count: cart[i].count };
+      });
+      setCartData(temp);
+      dispatch(actions.fetchCart(temp));
+    }
+  };
+
+  const getLocalCartData = async () => {
+    let localCart: any[] = JSON.parse(localStorage.getItem("cart") as any);
+    const firebaseDataBaseRef = collection(firebaseDB, "products");
+
+    for (let i in localCart) {
+      const q = query(firebaseDataBaseRef, where("id", "==", localCart[i].id));
+      const querySnapshot = await getDocs(q);
+      let docs: any = {};
+      querySnapshot.forEach((doc: any) => {
+        docs = doc.data();
+      });
+      localCart[i] = { ...localCart[i], ...docs };
+    }
+    setCartData(localCart);
+    setLoading(false);
+  };
+  const getRemoteCartData = async () => {
+    const firebaseDataBaseUserRef = collection(firebaseDB, "users");
+    const firebaseDataBaseProductRef = collection(firebaseDB, "products");
+
+    let loggedUser: any;
+
+    const q1 = query(firebaseDataBaseUserRef, where("id", "==", userid));
+    const userQuerySnapshot = await getDocs(q1);
+    userQuerySnapshot.forEach((doc: any) => {
+      loggedUser = doc.data();
+    });
+    let cart: any[] = loggedUser?.cart;
+    for (let i in cart) {
+      const q2 = query(
+        firebaseDataBaseProductRef,
+        where("id", "==", cart[i].id)
+      );
+      const querySnapshot = await getDocs(q2);
+      let docs: any = {};
+      querySnapshot.forEach((doc: any) => {
+        docs = doc.data();
+      });
+      cart[i] = { ...cart[i], ...docs };
+    }
+    setCartData(cart);
+    setLoading(false);
+  };
+  const updateRemoteCart = async (uid: any, updatedCart: any[]) => {
+    const cart: any[] = [...updatedCart];
+
+    const userRef = doc(firebaseDB, "users", uid);
+
+    await updateDoc(userRef, {
+      cart: cart,
+    });
+  };
+  console.log(111, cartData);
   return (
     <Container style={{ marginTop: 80, padding: 0 }} maxWidth="lg" fixed>
       <Paper className={css.paper}>
@@ -115,17 +220,35 @@ const ProductDetailsComponent = () => {
           </Grid>
           <Grid item xs={12}>
             <Box style={{ display: "flex", justifyContent: "center" }}>
-              <Button
-                startIcon={<ShoppingCartIcon />}
-                style={{
-                  backgroundColor: Colors.orange,
-                  color: "white",
-                  margin: "20px 0 10px 0",
-                  padding: 10,
-                }}
-              >
-                Add to Cart
-              </Button>
+              {cartData.findIndex(
+                (item: any, index: number) => item?.id === data.id
+              ) === -1 ? (
+                <Button
+                  onClick={() => addToCart(data)}
+                  startIcon={<ShoppingCartIcon />}
+                  style={{
+                    backgroundColor: Colors.orange,
+                    color: "white",
+                    margin: "20px 0 10px 0",
+                    padding: 10,
+                  }}
+                >
+                  Add to Cart
+                </Button>
+              ) : (
+                <Button
+                  onClick={() => history.push("/cart")}
+                  startIcon={<ShoppingCartIcon />}
+                  style={{
+                    backgroundColor: Colors.orange,
+                    color: "white",
+                    margin: "20px 0 10px 0",
+                    padding: 10,
+                  }}
+                >
+                  Go to Cart
+                </Button>
+              )}
             </Box>
           </Grid>
         </Grid>

@@ -129,6 +129,7 @@ function* loginWorker(action: any): any {
     console.log("user", user);
 
     yield put(actions.loginSuccess(user));
+    yield call(action?.payload?.history.goBack);
   } catch (error: any) {
     console.log(error.message);
   }
