@@ -52,3 +52,11 @@ p {
   font-size: 1rem;
   box-shadow: 2px 0px 2px grey;
 }
+.addToCartButton {
+  background-color: rgb(251, 100, 27) !important;
+  color: white !important;
+  margin: 20px 0 10px 0;
+  padding: 10px;
+  min-width: 135px !important;
+  min-height: 44px !important;
+}

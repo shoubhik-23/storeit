@@ -1,5 +1,9 @@
+//@ts-nocheck
 import React from "react";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import css from "./style.module.css";
+import ReactPDF from "@react-pdf/renderer";
+
 import {
   Accordion,
   AccordionDetails,
@@ -7,6 +11,8 @@ import {
   Button,
 } from "@mui/material";
 import moment from "moment";
+import MyDocument from "./MyDocument";
+import { PDFViewer } from "@react-pdf/renderer";
 
 interface props {
   expanded: boolean;
@@ -17,8 +23,10 @@ interface props {
 }
 
 const OrderCards = (props: props) => {
+  const ref: any = React.createRef();
+
   return (
-    <Accordion>
+    <Accordion expanded={true} ref={ref}>
       <AccordionSummary
         // expandIcon={<ExpandMoreIcon />}
         aria-controls="panel1bh-content"
@@ -83,9 +91,16 @@ const OrderCards = (props: props) => {
             <p style={{ flex: 0.8 }}>{el.name}</p>
           </div>
         ))}
-        <div>
+        <div className={css.invoiceButtonContainer}>
           <Button variant="outlined">Invoice</Button>
         </div>
+
+        {/* <ReactToPdf targetRef={ref} filename="div-blue.pdf">
+          {({ toPdf }: any) => <button onClick={toPdf}>Generate pdf</button>}
+        </ReactToPdf> */}
+        {/* <PDFViewer>
+          <MyDocument />
+        </PDFViewer> */}
       </AccordionDetails>
     </Accordion>
   );

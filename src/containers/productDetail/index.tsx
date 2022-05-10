@@ -1,4 +1,12 @@
-import { Grid, Box, Button, Container, Paper, Divider } from "@mui/material";
+import {
+  Grid,
+  Box,
+  Button,
+  Container,
+  Paper,
+  Divider,
+  CircularProgress,
+} from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import ImageCard from "../../components/ImageCard";
@@ -31,7 +39,8 @@ const ProductDetailsComponent = () => {
   const { home, profile } = store;
   const { login, userid } = profile;
   const { state }: any = location;
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [progress, setProgress] = useState<boolean>(false);
 
   const { data = {} } = state;
   const [cartData, setCartData] = useState<any[]>([]);
@@ -39,6 +48,7 @@ const ProductDetailsComponent = () => {
     login ? getRemoteCartData() : getLocalCartData();
   }, [login]);
   const addToCart = async (item: any) => {
+    setProgress(true);
     if (login) {
       const cart: any[] = [...cartData];
       const index = cart.findIndex((el) => el.id === item.id);
@@ -50,6 +60,7 @@ const ProductDetailsComponent = () => {
 
       await updateRemoteCart(userid, cart);
       setCartData(cart);
+      setProgress(false);
       dispatch(actions.fetchCart(cart));
     } else {
       const cart: any[] = JSON.parse(localStorage.getItem("cart") as any);
@@ -65,6 +76,8 @@ const ProductDetailsComponent = () => {
         return { ...el, count: cart[i].count };
       });
       setCartData(temp);
+      setProgress(false);
+
       dispatch(actions.fetchCart(temp));
     }
   };
@@ -121,7 +134,6 @@ const ProductDetailsComponent = () => {
       cart: cart,
     });
   };
-  console.log(111, cartData);
   return (
     <Container style={{ marginTop: 80, padding: 0 }} maxWidth="lg" fixed>
       <Paper className={css.paper}>
@@ -219,32 +231,31 @@ const ProductDetailsComponent = () => {
             </Box>
           </Grid>
           <Grid item xs={12}>
-            <Box style={{ display: "flex", justifyContent: "center" }}>
+            <Box
+              style={{
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
               {cartData.findIndex(
                 (item: any, index: number) => item?.id === data.id
               ) === -1 ? (
                 <Button
                   onClick={() => addToCart(data)}
                   startIcon={<ShoppingCartIcon />}
-                  style={{
-                    backgroundColor: Colors.orange,
-                    color: "white",
-                    margin: "20px 0 10px 0",
-                    padding: 10,
-                  }}
+                  className={css.addToCartButton}
                 >
-                  Add to Cart
+                  {progress ? (
+                    <CircularProgress size={20} color="inherit" />
+                  ) : (
+                    "Add to Cart"
+                  )}
                 </Button>
               ) : (
                 <Button
                   onClick={() => history.push("/cart")}
                   startIcon={<ShoppingCartIcon />}
-                  style={{
-                    backgroundColor: Colors.orange,
-                    color: "white",
-                    margin: "20px 0 10px 0",
-                    padding: 10,
-                  }}
+                  className={css.addToCartButton}
                 >
                   Go to Cart
                 </Button>

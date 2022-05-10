@@ -12,6 +12,7 @@ import {
   TextField,
 } from "@mui/material";
 import { Box } from "@mui/system";
+import GoogleButton from "react-google-button";
 
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
@@ -45,11 +46,11 @@ const LoginComponent = () => {
   const onPassChangeHandler = (e: any) => {
     setPassword(e.target.value);
   };
-  const loginWithEmail = () => {
-    dispatch(actions.loginUser(email, password, history));
+  const loginWithEmail = (type: string) => {
+    dispatch(actions.loginUser(type, email, password, history));
   };
-  const onSubmitHandler = () => {
-    loginWithEmail();
+  const onSubmitHandler = (type: string) => {
+    loginWithEmail(type);
   };
   const handleClickShowPassword = () => {
     setShowPassword((prev) => !prev);
@@ -103,7 +104,6 @@ const LoginComponent = () => {
             <Box className={css.loginButtonContainer}>
               {!email || !password || error.email || error.password ? (
                 <Button
-                  onClick={onSubmitHandler}
                   variant="contained"
                   disabled
                   fullWidth
@@ -113,7 +113,7 @@ const LoginComponent = () => {
                 </Button>
               ) : (
                 <Button
-                  onClick={onSubmitHandler}
+                  onClick={() => onSubmitHandler("email")}
                   variant="contained"
                   fullWidth
                   className={css.loginButton}
@@ -121,6 +121,11 @@ const LoginComponent = () => {
                   Login
                 </Button>
               )}
+            </Box>
+          </Grid>
+          <Grid item xs={12}>
+            <Box className={css.loginButtonContainer}>
+              <GoogleButton onClick={() => onSubmitHandler("google")} />
             </Box>
           </Grid>
           <Grid item xs={12}>

@@ -15,6 +15,8 @@ import * as actions from "../login/actions";
 import MaterialUiPhoneNumber from "material-ui-phone-number";
 
 import css from "./style.module.css";
+import GoogleButton from "react-google-button";
+
 import { useHistory } from "react-router-dom";
 
 const RegisterComponent = () => {
@@ -78,13 +80,13 @@ const RegisterComponent = () => {
         : setError({ ...error, confirm: false });
     } else setError({ ...error, confirm: false });
   };
-  const signUpWithEmail = () => {
+  const signUpWithEmail = (type: string) => {
     dispatch(
-      actions.signUpUser(signUpData.email, signUpData.password, history)
+      actions.signUpUser(type, signUpData.email, signUpData.password, history)
     );
   };
-  const onSubmitHandler = () => {
-    signUpWithEmail();
+  const onSubmitHandler = (type: string) => {
+    signUpWithEmail(type);
   };
   const handleClickShowPassword = () => {
     setShowPassword((prev) => !prev);
@@ -197,7 +199,7 @@ const RegisterComponent = () => {
               error={error.confirm}
               onChange={handleConfirmPasswordChange}
               required
-              label="password"
+              label="confirm password"
               size="small"
               fullWidth
               InputProps={{
@@ -229,7 +231,6 @@ const RegisterComponent = () => {
               error.phone ||
               error.email ? (
                 <Button
-                  onClick={onSubmitHandler}
                   variant="contained"
                   disabled
                   fullWidth
@@ -239,7 +240,7 @@ const RegisterComponent = () => {
                 </Button>
               ) : (
                 <Button
-                  onClick={onSubmitHandler}
+                  onClick={() => onSubmitHandler("email")}
                   variant="contained"
                   fullWidth
                   className={css.loginButton}
@@ -248,6 +249,17 @@ const RegisterComponent = () => {
                 </Button>
               )}
             </Box>
+          </Grid>
+          <Grid item xs={12}>
+            <Box className={css.loginButtonContainer}>
+              <GoogleButton onClick={() => onSubmitHandler("google")} />
+            </Box>
+          </Grid>
+          <Grid item xs={12}>
+            <p className={css.signupText}>
+              Already have account?
+              <span onClick={() => history.push("/login")}>Login here</span>
+            </p>
           </Grid>
         </Grid>
       </Paper>

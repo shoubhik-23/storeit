@@ -1,24 +1,36 @@
 import { Constants } from "../../constant";
 
-export const signUpUser = (email?: any, password?: any, history?: any) => {
+export const signUpUser = (
+  type: string,
+  email?: any,
+  password?: any,
+  history?: any
+) => {
   return {
     type: Constants.USER_SIGN_UP,
     payload: {
       data: {
         email,
         password,
+        type: type,
       },
       history,
     },
   };
 };
-export const loginUser = (email?: string, password?: string, history?: any) => {
+export const loginUser = (
+  type?: string,
+  email?: string,
+  password?: string,
+  history?: any
+) => {
   return {
     type: Constants.USER_LOGIN_IN,
     payload: {
       data: {
         email,
         password,
+        type: type,
       },
       history,
     },

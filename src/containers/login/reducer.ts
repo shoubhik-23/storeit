@@ -2,7 +2,7 @@ import { Constants } from "../../constant";
 
 const initialState = {
   login: false,
-  userData: null,
+  userData: {},
   userid: null,
   cart: [],
 };
@@ -14,12 +14,14 @@ export const loginReducer = (state = initialState, action: any) => {
         ...state,
         login: true,
         userid: action.payload.userData?.uid,
+        userData: action.payload.userData,
       };
     case Constants.RETRIEVE_APP_STATE_SUCCESS:
       return {
         ...state,
         login: action.payload?.login,
         userid: action.payload?.userid,
+        userData: action.payload?.userData,
       };
 
     case Constants.USER_LOGOUT:
@@ -27,6 +29,7 @@ export const loginReducer = (state = initialState, action: any) => {
         ...state,
         login: false,
         userid: null,
+        userData: {},
       };
     case Constants.FETCH_CART:
       return {

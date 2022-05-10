@@ -1,4 +1,4 @@
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { call, put, takeEvery, delay } from "redux-saga/effects";
 import { Constants } from "../../constant";
 import { firebaseDB } from "../../firebase/firebase_Config";
@@ -20,6 +20,17 @@ const loadAllData = async () => {
     return fetchedDocs;
   } catch (error) {}
 };
+const fetchUserDetails = async (userid: any) => {
+  let user: any;
+  const userDbRef = collection(firebaseDB, "users");
+  const q = query(userDbRef, where("id", "==", userid));
+  const userQuerySnapshot = await getDocs(q);
+
+  userQuerySnapshot.forEach((doc: any) => {
+    user = doc.data();
+  });
+  return user;
+};
 
 function* homeWorker(): any {
   try {
@@ -35,7 +46,10 @@ function* settingAppWorker(): any {
   let userid = window.localStorage.getItem("userid");
 
   if (accessToken) {
-    yield put(actions.retrievingAppStateSuccess({ login: true, userid }));
+    const user = yield call(fetchUserDetails, userid);
+    yield put(
+      actions.retrievingAppStateSuccess({ login: true, userid, userData: user })
+    );
     const cart: any[] = yield call(getRemoteCartData, userid);
     yield put(loginActions.fetchCart(cart));
   } else {

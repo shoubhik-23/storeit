@@ -1,11 +1,12 @@
+// @ts-nocheck
+
 import React, { useEffect } from "react";
 import { Route, Switch } from "react-router-dom";
 import "./App.css";
 import HomeComponent from "./containers/home";
 import LayoutComponent from "./containers/layout";
 import AdminComponent from "./containers/admin/index";
-import { firebaseDB } from "./firebase/firebase_Config";
-import { collection, getDocs } from "firebase/firestore";
+
 import { useDispatch, useSelector } from "react-redux";
 import * as actions from "./containers/home/actions";
 import ProductListComponent from "./containers/productList/index";
@@ -16,13 +17,16 @@ import SearchComponent from "./containers/search";
 import LoginComponent from "./containers/login/LoginComponent";
 import RegisterComponent from "./containers/login/RegisterComponent";
 import OrderComponent from "./containers/orders";
-import TranslateComp from "./test/TranslateComp";
 
 const App = () => {
   const dispatch = useDispatch();
   const { home, profile }: any = useSelector((store: any) => store);
   const { login } = profile;
-
+  useEffect(() => {
+    window.process = {
+      ...window.process,
+    };
+  }, []);
   useEffect(() => {
     settingApp();
   }, []);
@@ -68,9 +72,6 @@ const App = () => {
             <RegisterComponent />
           </Route>
         )}
-        <Route path={"/test"}>
-          <TranslateComp />
-        </Route>
       </Switch>
     </LayoutComponent>
   );
