@@ -2,7 +2,7 @@
 import React from "react";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import css from "./style.module.css";
-import ReactPDF from "@react-pdf/renderer";
+import ReactToPDF from "@react-pdf/renderer";
 
 import {
   Accordion,
@@ -95,9 +95,9 @@ const OrderCards = (props: props) => {
           <Button variant="outlined">Invoice</Button>
         </div>
 
-        {/* <ReactToPdf targetRef={ref} filename="div-blue.pdf">
+        {/* <ReactToPDF targetRef={ref} filename="div-blue.pdf">
           {({ toPdf }: any) => <button onClick={toPdf}>Generate pdf</button>}
-        </ReactToPdf> */}
+        </ReactToPDF> */}
         {/* <PDFViewer>
           <MyDocument />
         </PDFViewer> */}

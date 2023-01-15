@@ -42,7 +42,11 @@ const NavigationComponent = () => {
   const { login, userid, cart, userData } = profile;
   const { products } = home;
   const cartCount = cart?.length;
-  React.useEffect(() => {}, []);
+  React.useEffect(() => {
+    if (showInput && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [inputRef.current, showInput]);
   const onInputChangeHandler = (e: any) => {
     let temp: any[] = [];
     history.push("/search");
@@ -118,7 +122,6 @@ const NavigationComponent = () => {
       return cart.length;
     }
   };
-
   return (
     <>
       <AppBar
@@ -273,9 +276,6 @@ const NavigationComponent = () => {
             onClick={() => {
               setShowInput(true);
               // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-              inputRef.current
-                ? inputRef.current.focus()
-                : inputRef.current.focus();
             }}
           >
             <Search className={css.searchLogo} />
@@ -363,11 +363,18 @@ const NavigationComponent = () => {
       {showInput && (
         <TextField
           inputRef={inputRef}
-          style={{ marginTop: 60 }}
+          style={{
+            position: "fixed",
+            top: 60,
+            zIndex: 2,
+            backgroundColor: "#f2f2f2",
+            marginBottom: 90,
+          }}
           fullWidth
+          sx={{ display: { sm: "none" } }}
           size="small"
           onBlur={() => setShowInput(false)}
-          variant="outlined"
+          onChange={onInputChangeHandler}
         ></TextField>
       )}
     </>

@@ -19,6 +19,9 @@ import RegisterComponent from "./containers/login/RegisterComponent";
 import OrderComponent from "./containers/orders";
 
 const App = () => {
+  useEffect(() => {
+    console.log(78);
+  }, []);
   const dispatch = useDispatch();
   const { home, profile }: any = useSelector((store: any) => store);
   const { login } = profile;
